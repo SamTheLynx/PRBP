@@ -1,0 +1,245 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap');
+
+*{
+    padding: 0px;
+    margin: 0px;
+    font-family: 'Roboto', sans-serif;
+    color: #303030;
+}
+.main-container{
+    display: flex;
+    justify-content: center;
+    padding: 44px;
+}
+.main-container .acc-container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    border: 1px solid #3C4E6F;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+    width: 883px;
+    position: relative;
+}
+.main-container .acc-container .title-area{
+    display: flex;
+    justify-content: space-between;
+    column-gap: 382px;
+    padding: 55px;
+}
+.main-container .acc-container .title-area .btn-normal{
+    width: 212px;
+    padding: 2px;
+    border-radius: 5px;
+    background: #3C4E6F;
+    border: #3C4E6F solid 1px;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+    font-family: 'Roboto', sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color:white;
+}
+.main-container .acc-container .title-area .title{
+    font-family: 'Roboto', sans-serif;
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    color: #303030;
+}
+.main-container .acc-container .pair{
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+    padding: 55px;
+}
+.main-container .acc-container .pair .pair-box{
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    width: 340px;
+    height: 69px;
+}
+.main-container .acc-container .pair .pair-box2{
+    display: flex;
+    flex-direction: column;
+    row-gap: 11px;
+    width: 340px;
+    height: 69px;
+}
+.main-container .acc-container .pair .subtitle{
+   font-size: 20px;
+   font-weight: bold;
+}
+.main-container .acc-container .pair .text{
+    font-size: 28px;
+    font-weight: bold;
+ }
+ .main-container .acc-container .pair .input{
+    border: #3C4E6F solid 1px;
+    border-radius: 5px;
+    font-size: 24px;
+    font-weight: bold;
+    background-color: #3c4e6f7e;
+    padding: 10px;
+ }
+ .main-container .acc-container .pair .btn-medium{
+    border: #3C4E6F solid 1px;
+    border-radius: 5px;
+    background: #3C4E6F;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+    font-family: 'Roboto', sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color:white;
+    padding: 10px;
+ }
+ .main-container .acc-container .pair .btn-long{
+    width: 800px;
+    border: #3C4E6F solid 1px;
+    border-radius: 5px;
+    background: #3C4E6F;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+    font-family: 'Roboto', sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color:white;
+    padding: 10px;
+ }
+.main-container .acc-container .btn-big{
+    background-color: #3C4E6F;
+    border: #3C4E6F solid 1px;
+    border-radius: 5px;
+    padding: 18px;
+    padding-left: 55px;
+    padding-right: 55px;
+    font-size: 28px;
+    font-weight: bold;
+    color: white;
+    margin-left: 245px;
+}
+
+@media screen and (max-width: 600px) {
+    .main-container{
+        display: flex;
+        justify-content: center;
+        padding: 5px;
+    }
+    .main-container .acc-container{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid #3C4E6F;
+        border-radius: 5px;
+        background-color: white;
+        box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+        position: relative;
+    }
+    .main-container .acc-container .title-area{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        row-gap: 20px;
+        flex-direction: column;
+        padding: 30px;
+    }
+    .main-container .acc-container .title-area .btn-normal{
+        width: 100px;
+        padding: 5px;
+        border-radius: 5px;
+        background: #3C4E6F;
+        border: #3C4E6F solid 1px;
+        box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+        font-family: 'Roboto', sans-serif;
+        font-size: 15px;
+        font-weight: bold;
+        text-align: center;
+        color:white;
+    }
+    .main-container .acc-container .title-area .title{
+        font-family: 'Roboto', sans-serif;
+        font-size: 30px;
+        font-weight: bold;
+        text-align: center;
+        color: #303030;
+    }
+    .main-container .acc-container .pair{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: left;
+        row-gap: 20px;
+    }
+    .main-container .acc-container .pair .pair-box{
+        display: flex;
+        flex-direction: column;
+        row-gap: 10px;
+        width: 340px;
+        height: 69px;
+    }
+    .main-container .acc-container .pair .pair-box2{
+        display: flex;
+        flex-direction: column;
+        row-gap: 1px;
+        width: 340px;
+        height: 69px;
+    }
+    .main-container .acc-container .pair .subtitle{
+        font-size: 18px;
+        font-weight: bold;
+     }
+     .main-container .acc-container .pair .text{
+         font-size: 25px;
+         font-weight: bold;
+      }
+      .main-container .acc-container .pair .input{
+         border: #3C4E6F solid 1px;
+         border-radius: 5px;
+         font-size: 22px;
+         font-weight: bold;
+         background-color: #3c4e6f7e;
+         padding: 10px;
+      }
+      .main-container .acc-container .pair .btn-medium{
+        border: #3C4E6F solid 1px;
+        border-radius: 5px;
+        background: #3C4E6F;
+        box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+        font-family: 'Roboto', sans-serif;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: center;
+        color:white;
+        padding: 10px;
+     }
+     .main-container .acc-container .pair .btn-long{
+        border: #3C4E6F solid 1px;
+        border-radius: 5px;
+        background: #3C4E6F;
+        box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+        font-family: 'Roboto', sans-serif;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: center;
+        color:white;
+        padding: 10px;
+        width: 340px;
+     }
+    .main-container .acc-container .btn-big{
+        background-color: #3C4E6F;
+        border: #3C4E6F solid 1px;
+        border-radius: 5px;
+        padding: 5px;
+        font-size: 24px;
+        font-weight: bold;
+        color: white;
+        padding-left: 40px;
+        padding-right: 40px;
+        margin-right: 225px;
+    }
+  }

@@ -1,0 +1,22 @@
+.number,.cnic,.number,.name {
+    width: 400px;
+    height: 50px;
+    position: relative;
+    border-radius: 5px;
+    background: #3C4E6F80;
+}
+
+.border2{
+display: flex;
+flex-direction: column;
+align-items: center; 
+position:relative;
+width: 90vw;
+max-width:650px;
+height: 180vh;
+margin:10vh auto;
+border-radius: 5px;
+background: white;
+border: 1px solid #3C4E6F;
+box-shadow: 0px 4px 4px 0px #00000040;
+}

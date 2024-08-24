@@ -1,0 +1,24 @@
+.viewSubAdmin-h1{
+    font-size: 30px;
+    color:#3C4E6F;
+    font-weight: 800;
+}
+.viewSubAdmin-li{
+    border: 1px solid #3C4E6F;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.delete-button {
+    background-color: #3C4E6F;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 0px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  

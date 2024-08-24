@@ -1,0 +1,114 @@
+
+.log-sign-options{
+    display: flex;
+    column-gap: 10px;
+}
+.p{
+    color: #3D4E6F;
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.VerticalLine{
+    border-right: solid 2px  #D9D9D9;
+    height:30px;
+}
+
+.topbar{
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+   align-items: center;
+   gap: 20%;
+   padding: 8px;
+}
+
+.first-div{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+}
+.first-div h1{
+    color: #303030;
+    font-size: 32px;
+    font-weight:700;
+}
+.second-div{
+    display: flex;
+    gap: 10px; 
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+
+.navbar{
+    background: #3D4E6F;
+    padding: 10px;
+}
+.navbar ul {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    gap: 50px;
+    justify-content: center; /* Center the items horizontally */}
+.navbar li {
+    color: #fff;
+    font-size: 20px;
+    font-weight:300  ;
+}
+
+.navbar-container{
+    box-shadow: 0 5px 10px 0 #00000074;
+}
+
+@media only screen and (max-width: 768px) {
+    p{
+        color: #303030;
+        font-size: 18px;
+        font-weight: 500;
+    }  
+    .first-div h1{
+        color: #303030;
+        font-size: 20px;
+        font-weight:600;
+    }
+
+}
+@media only screen and (max-width: 500px) {
+    p{
+        color: #303030;
+        font-size: 16px;
+        font-weight: 400;
+    } 
+    .first-div{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    } 
+    .first-div h1{
+        color: #303030;
+        font-size: 18px;
+        font-weight:500;
+    }
+    .topbar{
+        display: flex;
+        flex-direction: column; 
+        row-gap: 5px;
+     }
+     .navbar ul {
+        list-style: none;
+        display: flex;
+        flex-direction: row;
+        text-align: center;
+        gap: 10px;
+        justify-content: center; /* Center the items horizontally */}
+    
+        .navbar li {
+            color: #fff;
+            font-size: 16px;
+            font-weight:300  ;
+        }
+    }

@@ -1,0 +1,50 @@
+.about-us {
+    text-align: center;
+    padding: 20px;
+    background-color: #f7f7f7;
+  }
+  
+  .about-us h2 {
+    margin-bottom: 20px;
+    font-size: 40px;
+    color: #19015a;
+  }
+  
+  .content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .image img {
+    max-width: 70%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text {
+    max-width: 400px;
+    text-align: left;
+    color: rgb(43, 43, 86);
+  }
+  
+  .text p {
+    margin-bottom: 15px;
+    font-size:18px;
+  }
+  
+  .text a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .text a:hover {
+    text-decoration: underline;
+  }
+  
+  .welcome{
+    font-size: 30px;
+  }
