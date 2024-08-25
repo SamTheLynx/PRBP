@@ -16,3 +16,7 @@ Terminal 3: 'cd client'
             'npm start'
 
 Input the commands in this order and the react app with start working with the local blockchain.
+
+This project uses local MongoDB, not the cloud version.
+
+This project also uses Pinata IPFS as decentralised storage. You may need to set up an account at https://www.pinata.cloud/ and use your own key to get the storage started.
