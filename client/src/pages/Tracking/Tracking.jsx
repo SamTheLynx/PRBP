@@ -97,9 +97,11 @@ const TrackFormStatus = () => {
 
   const organizations = [
     "Application Submitted", //DMA
-    "DMA Approved", // PFA
-    "Food Department Approved", //Pol
-    "Police Clearance Approved", //approved
+    "DTS Approved", // PFA
+    "LDA (Town Planning) Approved", //Pol
+    "LDA (TEPA) Approved", //approved
+    "LDA (EPA) Approved", //approved
+    "LDA (WASA) Approved", //approved
     "Fully Approved!", //approved
   ];
 
