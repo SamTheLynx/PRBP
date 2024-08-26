@@ -21,7 +21,7 @@ import Procedure from './pages/Procedure/Procedure';
 import UserCertificateList from './pages/UserCertificateList';
 import ViewSubAdmins from './pages/AdminPortal/ViewSubAdmins'
 import OwnershipTransfer from './pages/OwnerTransfer';
-
+import AdminSidebar from './pages/AdminPortal/AdminSidebar.jsx';
 function App() {
   return(
     <div>
@@ -49,6 +49,8 @@ function App() {
             <Route path="/userCertificates" element={<UserCertificateList />} />
             <Route path="/viewSubAdmins" element={<ViewSubAdmins />} />
             <Route path="/ownershipTransfer" element={<OwnershipTransfer />} />
+            <Route path='/adminSidebar' element={<AdminSidebar/>}/>
+            {/* <Route path='./statistic' element={<Statistic/>}/> */}
           </Route>
         </Routes>
       </BrowserRouter>
