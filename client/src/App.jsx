@@ -23,6 +23,7 @@ import ViewSubAdmins from './pages/AdminPortal/ViewSubAdmins'
 import OwnershipTransfer from './pages/OwnerTransfer';
 import CNIC_Upload from './pages/CNIC_Upload';
 
+import AdminSidebar from './pages/AdminPortal/AdminSidebar.jsx';
 function App() {
   return(
     <div>
@@ -51,6 +52,8 @@ function App() {
             <Route path="/userCertificates" element={<UserCertificateList />} />
             <Route path="/viewSubAdmins" element={<ViewSubAdmins />} />
             <Route path="/ownershipTransfer" element={<OwnershipTransfer />} />
+            <Route path='/adminSidebar' element={<AdminSidebar/>}/>
+            {/* <Route path='./statistic' element={<Statistic/>}/> */}
           </Route>
         </Routes>
       </BrowserRouter>
