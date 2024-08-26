@@ -22,7 +22,6 @@ import UserCertificateList from './pages/UserCertificateList';
 import ViewSubAdmins from './pages/AdminPortal/ViewSubAdmins'
 import OwnershipTransfer from './pages/OwnerTransfer';
 import CNIC_Upload from './pages/CNIC_Upload';
-
 import AdminSidebar from './pages/AdminPortal/AdminSidebar.jsx';
 function App() {
   return(
