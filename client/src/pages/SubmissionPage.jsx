@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Form, Input, Typography, Select, Row, Col } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import EmployeeTable from './EmployeeTable';
 
 const { Option } = Select;
 const { Title } = Typography;
@@ -82,7 +83,7 @@ function SubmissionPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-gray-200 to-blue-100 p-4">
+    <div className="flex items-start justify-center min-h-screen bg-gradient-to-r from-gray-200 to-blue-100 p-4">
       <div className="bg-gray-100 p-8 shadow-lg rounded-lg max-w-xl w-full">
         <Form onFinish={onFinish} layout="vertical">
           <div className="text-center mb-6">
@@ -551,8 +552,22 @@ function SubmissionPage() {
           >
             <Input  className="border-gray-300 rounded-lg" />
           </Form.Item>
-
-
+          
+          <EmployeeTable />
+          
+          <Form.Item
+            label="Rates Charged"
+            name="rates"
+            rules={[
+              {
+                required: true,
+                message: 'Please input the rates charged',
+              },
+            ]}
+          >
+            <Input placeholder='Immediately before 1st Jan. 1977' className="border-gray-300 rounded-lg" />
+            <Input  placeholder='Present with date from which prescribed'className="border-gray-300 rounded-lg" />
+          </Form.Item>
 
           <Form.Item>
             <div className="flex justify-center">
