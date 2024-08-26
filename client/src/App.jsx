@@ -21,6 +21,7 @@ import Procedure from './pages/Procedure/Procedure';
 import UserCertificateList from './pages/UserCertificateList';
 import ViewSubAdmins from './pages/AdminPortal/ViewSubAdmins'
 import OwnershipTransfer from './pages/OwnerTransfer';
+import CNIC_Upload from './pages/CNIC_Upload';
 
 function App() {
   return(
@@ -33,6 +34,7 @@ function App() {
             <Route path="/signup" element={<Signup/>}/>
             <Route path="/loginOptions" element={<OptionPage/>}/>
             <Route path="/submission" element={<SubmissionPage/>}/>
+            <Route path="/cnic" element={<CNIC_Upload/>}/>
             <Route path="/billing" element={<BillingPage/>}/>
             <Route path="/about" element={<AboutUs/>}/>
             <Route path="/contact" element={<Contact/>}/>
