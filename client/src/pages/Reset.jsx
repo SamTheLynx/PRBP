@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Typography, message } from 'antd';
 import axios from 'axios';
-import './Signup.css';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 function Reset() {
   const navigate = useNavigate();
@@ -13,7 +12,7 @@ function Reset() {
 
   const onFinish = async (values) => {
     console.log('Form Values:', values);
-    
+
     if (otpSent) {
       // Verify OTP and reset password
       try {
@@ -56,89 +55,86 @@ function Reset() {
     }
   };
 
-  const clicked = ()=>{
-    alert("Password successfully updated");
-    navigate("/user-login")
-  }
-
   return (
-    <div className='login-form'>
-      <Title level={1}>Reset Password</Title>
-      <Form layout='vertical' onFinish={onFinish}>
-        <Form.Item
-          name='email'
-          label='Email'
-          initialValue={email}
-          rules={[
-            {
-              required: true,
-              message: 'Please enter your email',
-            },
-            {
-              type: 'email',
-              message: 'Please enter a valid email',
-            },
-          ]}
-        >
-          <Input className='input' placeholder='Enter your email' disabled={otpSent} />
-        </Form.Item>
-        {!otpSent && (
-          <>
-            <Form.Item
-              name='password'
-              label='Enter Password'
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter your password',
-                },
-              ]}
-            >
-              <Input.Password placeholder='Enter your password' />
-            </Form.Item>
-            <Form.Item
-              name='repassword'
-              label='Confirm Password'
-              dependencies={['password']}
-              rules={[
-                {
-                  required: true,
-                  message: 'Please confirm your password',
-                },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue('password') === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject('Passwords do not match');
-                  },
-                }),
-              ]}
-            >
-              <Input.Password placeholder='Confirm your password' />
-            </Form.Item>
-          </>
-        )}
-        {otpSent && (
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-gray-200 to-blue-100 p-4">
+      <div className="w-full max-w-md bg-gray-100 p-8 rounded-lg shadow-md">
+        <h1 className="text-center text-custom-blue text-3xl mb-6">Reset Password</h1>
+        <Form layout="vertical" onFinish={onFinish}>
           <Form.Item
-            name='otp'
-            label='OTP'
+            name='email'
+            label={<Text className="block mb-1">Email</Text>}
+            initialValue={email}
             rules={[
               {
                 required: true,
-                message: 'Please enter the OTP sent to your email',
+                message: 'Please enter your email',
+              },
+              {
+                type: 'email',
+                message: 'Please enter a valid email',
               },
             ]}
           >
-            <Input className='input' placeholder='Enter OTP' />
+            <Input className='border-gray-300 rounded-lg' placeholder='Enter your email' disabled={otpSent} />
           </Form.Item>
-        )}
-        <Form.Item name='submit'>
-          <Button type='primary' htmlType='submit' onClick={clicked}>
-            {otpSent ? 'Verify OTP and Reset Password' : 'Submit'}
-          </Button>
-        </Form.Item>
-      </Form>
+          {!otpSent && (
+            <>
+              <Form.Item
+                name='password'
+                label={<Text className="block mb-1">Enter Password</Text>}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter your password',
+                  },
+                ]}
+              >
+                <Input.Password className='border-gray-300 rounded-lg' placeholder='Enter your password' />
+              </Form.Item>
+              <Form.Item
+                name='repassword'
+                label={<Text className="block mb-1">Confirm Password</Text>}
+                dependencies={['password']}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please confirm your password',
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue('password') === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject('Passwords do not match');
+                    },
+                  }),
+                ]}
+              >
+                <Input.Password className='border-gray-300 rounded-lg' placeholder='Confirm your password' />
+              </Form.Item>
+            </>
+          )}
+          {otpSent && (
+            <Form.Item
+              name='otp'
+              label={<Text className="block mb-1">OTP</Text>}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter the OTP sent to your email',
+                },
+              ]}
+            >
+              <Input className='border-gray-300 rounded-lg' placeholder='Enter OTP' />
+            </Form.Item>
+          )}
+          <Form.Item className="text-center">
+            <button htmlType='submit' className=" bg-custom-blue text-white text-white px-20 py-2 rounded-md">
+              {otpSent ? 'Verify OTP and Reset Password' : 'Submit'}
+            </button>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
   );
 }

@@ -43,7 +43,8 @@ const Navbar = () => {
         <div className="first-div">
           <img src={logo} alt="logo" />
           <Link to="/" className="no-underline">
-            <h1>Restaurant Business Digitization</h1>
+            <h1>PRBRP</h1>
+            <h3>Punjab Restaurant Business Registration Portal</h3>
           </Link>
         </div>
 
