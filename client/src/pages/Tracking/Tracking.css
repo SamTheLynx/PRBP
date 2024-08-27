@@ -1,7 +1,9 @@
 
 .Tracking-container {
     display: flex;
-    height: 50vh;
+    align-items: center;
+    justify-content: center;
+
     margin:20px;
  }
   
@@ -11,6 +13,27 @@
     background-color: #3C4E6F;
     color: #B0B0B0;
     border-radius: 20px;
+  }
+
+  .Tracking-organisation-list2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    row-gap: 60px;
+    padding: 60px;
+    margin-top: 30px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(30, 62, 103, 0.25);
+  }
+  .Tracking-organisation-list2 h2{
+    font-size: 32px;
+    font-weight: 600px;
+  }
+
+  .Tracking-organisation-list2 a{
+    color: #3A60A4;
   }
   
   .Tracking-organization-item {
@@ -60,33 +83,58 @@
   }
 
   .Tracking-tracking-form {
-    flex: 2;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    border-radius: 10px;
     align-items: center;
-    padding: 20px;
+    row-gap: 60px;
+    padding: 60px;
+    margin-top: 30px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(30, 62, 103, 0.25);
+  }
+
+  .Tracking-tracking-form h2{
+    font-size: 32px;
+  }
+
+  .Tracking-tracking-form p{
+    color: red;
   }
   
   .Tracking-input-field {
-    width: 300px;
-    margin-bottom: 20px;
+    width: 500px;
     padding: 10px;
-    border: 1px solid #3C4E6F;
+    border: 1px solid #EDF0F4;
+    background-color: #EDF0F4;
     border-radius: 5px;
   }
   
   .Tracking-status-button {
-    background-color: #3C4E6F;
+    background-color: #3A60A4;
     color: white;
-    padding: 10px 20px;
+    padding: 10px 60px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
   }
   
+  .Tracking-back-button {
+    background-color: white;
+    color: #CBD2DB;
+    padding: 10px 60px;
+    border: 1px solid #CBD2DB;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
   .Tracking-status-button:hover {
-    background-color: #2a3a50;
+    box-shadow: 0 4px 8px rgba(30, 62, 103, 0.25);
+  }
+
+  .Tracking-back-button:hover {
+    box-shadow: 0 4px 8px rgba(30, 62, 103, 0.1);
   }
   
   .Tracking-result-text {
@@ -102,4 +150,131 @@
   .Tracking-result-text-not-found {
     color: red;
   }
+
+  .Progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
   
+  .Progress-bar {
+    display: flex;
+    width: 100%;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  
+  .Progress-segment {
+    flex: 1;
+    height: 4px; /* Height of the progress bar */
+    background-color: #ddd; /* Inactive color */
+  }
+  
+  .Progress-segment-active {
+    background-color: #3A60A4; /* Active color */
+  }
+  
+  .Organization-list {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .Organization-item {
+    text-align: center; /* Center align text under the progress segment */
+    width: 100%;
+    position: relative;
+  }
+  
+  .Organization-item-active {
+    font-weight: bold; /* Highlight current step */
+    color: #3A60A4;
+  }
+  
+  .Organization-item-inactive {
+    color: #ddd;
+  }
+  
+
+  /* .Progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .Progress-bar {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    position: relative;
+    align-items: center;
+  }
+  
+  .Progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  
+  .Progress-circle {
+    width: 30px; 
+    height: 30px; 
+    border-radius: 50%; 
+    background-color: #ddd; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    position: relative;
+    z-index: 1; 
+  }
+  
+  .Progress-circle-active {
+    background-color: #4caf50; 
+  }
+  
+  .Progress-circle-inactive {
+    background-color: #ddd; 
+  }
+  
+  .Progress-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    width: 500%; 
+    height: 4px; 
+    background-color: #ddd; 
+    transform: translateY(-50%);
+    z-index: 0;
+  }
+  
+  .Progress-circle-active + .Progress-step:not(:last-child)::after {
+    background-color: #4caf50; 
+  }
+  
+  .Organization-list {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  
+  .Organization-item {
+    text-align: center; 
+    width: 100%;
+    position: relative;
+  }
+  
+  .Organization-item-active {
+    font-weight: bold; 
+    color: #4caf50;
+  }
+  
+  .Organization-item-inactive {
+    color: #ddd;
+  }
+   */
