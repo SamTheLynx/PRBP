@@ -23,6 +23,8 @@ import ViewSubAdmins from './pages/AdminPortal/ViewSubAdmins'
 import OwnershipTransfer from './pages/OwnerTransfer';
 import CNIC_Upload from './pages/CNIC_Upload';
 import AdminSidebar from './pages/AdminPortal/AdminSidebar.jsx';
+import TEPA from './pages/TEPA.jsx';
+import WASA from './pages/WASA.jsx';
 function App() {
   return(
     <div>
@@ -35,6 +37,8 @@ function App() {
             <Route path="/loginOptions" element={<OptionPage/>}/>
             <Route path="/submission" element={<SubmissionPage/>}/>
             <Route path="/cnic" element={<CNIC_Upload/>}/>
+            <Route path="/tepa" element={<TEPA/>}/>
+            <Route path="/wasa" element={<WASA/>}/>
             <Route path="/billing" element={<BillingPage/>}/>
             <Route path="/about" element={<AboutUs/>}/>
             <Route path="/contact" element={<Contact/>}/>
