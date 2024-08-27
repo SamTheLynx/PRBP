@@ -7,6 +7,7 @@ module.exports = {
       colors: {
         'custom-blue': '#315396', // Custom shade of blue
         'procedure': '#E7F3FD',
+        'super-dark-blue': '#00102E',
         
       },
     },
