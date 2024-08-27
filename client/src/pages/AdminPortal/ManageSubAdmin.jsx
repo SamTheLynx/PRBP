@@ -55,7 +55,7 @@ function ManageSubAdmin() {
   const navigate = useNavigate();
 
   const handleViewCardDetails = (type) => {
-    navigate(`/view-${type}`);
+    navigate(`/${type}`);
   };
 
   return (
@@ -68,7 +68,7 @@ function ManageSubAdmin() {
               <h3>Total Applications</h3>
               <p>150</p>
               <button
-                onClick={() => handleViewCardDetails("total-applications")}
+                onClick={() => handleViewCardDetails("subAdmin")}
                 className="card-view-button"
               >
                 View
@@ -78,7 +78,7 @@ function ManageSubAdmin() {
               <h3>New Applications</h3>
               <p>30</p>
               <button
-                onClick={() => handleViewCardDetails("new-applications")}
+                onClick={() => handleViewCardDetails("subAdmin")}
                 className="card-view-button"
               >
                 View
@@ -88,7 +88,7 @@ function ManageSubAdmin() {
               <h3>In-process Applications</h3>
               <p>45</p>
               <button
-                onClick={() => handleViewCardDetails("in-process-applications")}
+                onClick={() => handleViewCardDetails("subAdmin")}
                 className="card-view-button"
               >
                 View
@@ -98,7 +98,7 @@ function ManageSubAdmin() {
               <h3>Pending Applications</h3>
               <p>60</p>
               <button
-                onClick={() => handleViewCardDetails("pending-applications")}
+                onClick={() => handleViewCardDetails("subAdmin")}
                 className="card-view-button"
               >
                 View
