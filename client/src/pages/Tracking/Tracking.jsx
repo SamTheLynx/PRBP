@@ -3,7 +3,7 @@ import "./Tracking.css"; // Import the CSS file
 import { useSelector } from "react-redux";
 import { ComputationsAbi } from "../../ContractAbis/ComputationsAbi";
 import { ethers } from "ethers";
-import PDFSrc from "../../assets/PFA Cert Example.pdf";
+import PDFSrc from "../../assets/DTS.jpg";
 
 const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
