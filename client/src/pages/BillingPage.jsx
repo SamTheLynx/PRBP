@@ -124,11 +124,15 @@ export default function BillingPage(){
         <div className={styles.container}>
             <div className={styles.innerContainer}>
                 <h1 className={styles.heading}>Itemized Bill</h1>
-                <div className={styles.billItem}>Directorate of Municipal Administration: 0.002 ETH</div>
-                <div className={styles.billItem}>Pakistan Food Authority: 0.002 ETH</div>
-                <div className={styles.billItem}>Police Clearance: 0.001 ETH</div>
-                <div className={styles.billItem}>Form Fee: 0.0003 ETH</div>
-                <div className={styles.totalBill}>Your total bill is: 0.0053 ETH.</div>
+                <div className={styles.billItem}>Platform fee: <span>500 pkr</span></div>
+                <div className={styles.billItem}>Police Khidmat Markaz: <span>1,000 pkr</span></div>
+                <div className={styles.billItem}>DTS: <span>40,000 pkr</span></div>
+                <div className={styles.billItem}>LDA: <span>10,000 pkr</span></div>
+                <div className={styles.billItem}>LDA (Town Planning): <span>10,000 pkr</span></div>
+                <div className={styles.billItem}>LDA (TEPA): <span>100,000 pkr</span></div>
+                <div className={styles.billItem}>LDA (EPA): <span>150,000 pkr</span></div>
+                <div className={styles.billItem}>LDA (WASA): <span>75,000 pkr</span></div>
+                <div className={styles.totalBill}>Your total bill is: <span>368,500 pkr</span></div>
                 <button className={styles.primaryButton} onClick={submitForm}>Submit</button>
             </div>
         </div>
