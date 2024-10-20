@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Form, Input, Typography, Select, Row, Col } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import EmployeeTable from './EmployeeTable';
 
 const { Option } = Select;
@@ -18,13 +19,7 @@ const months = Array.from({ length: 12 }, (_, i) => i + 1);
 const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
 const provinces = [
-  'Punjab',
-'Sindh',
-'Khyber Pakhtunkhwa',
-'Balochistan',
-'Gilgit-Baltistan',
-'Azad Kashmir',
-'Islamabad Capital Territory',
+  'Punjab'
 ];
 
 const towns = [
@@ -44,6 +39,14 @@ const towns = [
   'Chungi Amar Sadhu',
   'Township'
 ];
+
+const uc = [
+  'uc1',
+  'uc1',
+  'uc1',
+  'uc1',
+  'uc1'
+]
 
 const size = [
   'Less than 20',
@@ -65,26 +68,57 @@ const costs = [
   'More than $20,000'
 ];
 
+
+const cuisines = [
+  "Italian",
+  "Chinese",
+  "Mexican",
+  "Indian",
+  "Japanese",
+  "Thai",
+  "French",
+  "Spanish",
+  "Greek",
+  "Mediterranean",
+  "American",
+  "Korean",
+  "Vietnamese",
+  "Middle Eastern",
+  "Turkish",
+  "Caribbean",
+  "Ethiopian",
+  "Brazilian",
+  "Lebanese",
+  "Russian"
+];
+
 function SubmissionPage() {
   const navigate = useNavigate();
-  const [fileList, setFileList] = useState([]);
+  //const [fileList, setFileList] = useState([]);
 
-  const beforeUpload = (file) => {
-    setFileList([file]);
-    return false; // Prevent automatic upload
-  };
+  // const beforeUpload = (file) => {
+  //   setFileList([file]);
+  //   return false; // Prevent automatic upload
+  // };
 
   const onFinish = async (values) => {
-    console.log('Form values: ', values);
-    console.log('File List', fileList);
-
-    // Combine fileList and values here
-    navigate('/billing', { state: values });
+    // console.log('Form values: ', values);
+    // console.log('File List', fileList);
+    try {
+      const response = await axios.post('http://localhost:5000/submission', values);
+      console.log("response: ", response.data.message);
+      if (response.data.message === "Form submitted successfully") {
+        navigate('/wasa');
+      }
+    } catch (error) {
+       console.log(error);
+    }
   };
+  
 
   return (
     <div className="flex items-start justify-center min-h-screen bg-gradient-to-r from-gray-200 to-blue-100 p-4">
-      <div className="bg-gray-100 p-8 shadow-lg rounded-lg max-w-xl w-full">
+      <div className="bg-gray-100 p-8 shadow-lg rounded-lg max-w-3xl w-full">
         <Form onFinish={onFinish} layout="vertical">
           <div className="text-center mb-6">
           <h1 className="text-center text-custom-blue text-3xl mb-6">Fill in the details</h1>
@@ -92,7 +126,7 @@ function SubmissionPage() {
 
           <Form.Item
             label="Name of Restaurant"
-            name="bname"
+            name="RestaurantName"
             rules={[
               {
                 required: true,
@@ -122,50 +156,79 @@ function SubmissionPage() {
             </Select>
           </Form.Item>
 
-          <Form.Item
-            label="Exact date of commission in respect of new restaurant commissioned on or after the 1st January, 1977"
-            name="dateOfBirth"
-            rules={[
-              {
-                required: true,
-                message: 'Please select the date of commission',
-              },
-            ]}
-          >
-            <Row gutter={8}>
-              <Col span={8}>
-                <Select placeholder="Day" className="border-gray-300 rounded-lg">
-                  {days.map((day) => (
-                    <Option key={day} value={day}>
-                      {day}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-              <Col span={8}>
-                <Select placeholder="Month" className="border-gray-300 rounded-lg">
-                  {months.map((month) => (
-                    <Option key={month} value={month}>
-                      {month}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-              <Col span={8}>
-                <Select placeholder="Year" className="border-gray-300 rounded-lg">
-                  {years.map((year) => (
-                    <Option key={year} value={year}>
-                      {year}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-            </Row>
-          </Form.Item>
+
+
+
+
 
           <Form.Item
+         label="Exact date of commission in respect of new restaurant commissioned on or after the 1st January, 1977"
+          name="dateOfCommission"
+         rules={[
+               {
+               validator: (_, value) => {
+               if (!value || !value.day || !value.month || !value.year) {
+               return Promise.reject(new Error('Please select the date of commission'));
+               }
+               return Promise.resolve();
+             },
+             },
+             ]}
+>
+      <Row gutter={8}>
+        <Col span={8}>
+            <Form.Item
+              name={['dateOfCommission', 'day']} // Using an array to group
+              noStyle
+            >
+              <Select placeholder="Day" className="border-gray-300 rounded-lg">
+                 {  days.map((day) => (
+                 <Option key={day} value={day}>
+                 {day}
+                </Option>
+              ))}
+              </Select>
+           </Form.Item>
+        </Col>
+      <Col span={8}>
+      <Form.Item
+        name={['dateOfCommission', 'month']} // Using an array to group
+        noStyle
+      >
+        <Select placeholder="Month" className="border-gray-300 rounded-lg">
+          {months.map((month) => (
+            <Option key={month} value={month}>
+              {month}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+    </Col>
+    <Col span={8}>
+      <Form.Item
+        name={['dateOfCommission', 'year']} // Using an array to group
+        noStyle
+      >
+        <Select placeholder="Year" className="border-gray-300 rounded-lg">
+          {years.map((year) => (
+            <Option key={year} value={year}>
+              {year}
+            </Option>
+          ))}
+         </Select>
+       </Form.Item>
+      </Col>
+      </Row>
+      </Form.Item>
+      
+
+
+
+
+
+      <Form.Item
             label="Address"
-            name="address"
+            name="RestaurantAddress"
             rules={[
               {
                 required: true,
@@ -178,7 +241,7 @@ function SubmissionPage() {
 
               <Form.Item
                 label="Telegraphic Address"
-                name="telegraphicAddress"
+                name="RestaurantTelegraphicAddress"
                 rules={[
                   {
                     required: true,
@@ -191,7 +254,7 @@ function SubmissionPage() {
 
               <Form.Item
                 label="Telex Number"
-                name="telexNumber"
+                name="RestaurantTelexNumber"
                 rules={[
                   {
                     required: true,
@@ -204,12 +267,13 @@ function SubmissionPage() {
 
               <Form.Item
                 label="Telephone Number (if any)"
-                name="telephoneNumber"
+                name="RestaurantTelephoneNumber"
                 rules={[
                   {
               
                     message: 'Please input the telephone number',
                   },
+                  { pattern: /^03[0-9]{9}$/, message: 'Phone Number should be in valid format' }
                 ]}
               >
                 <Input placeholder="Telephone number" className="border-gray-300 rounded-lg" />
@@ -218,40 +282,91 @@ function SubmissionPage() {
           </Form.Item>
 
 
-          <Form.Item
-            label="Location"
-            name="location"
-            rules={[
-              {
-                required: true,
-                message: 'Please enter your location',
-              },
-            ]}
-          >
-            <Row gutter={8}>
-              <Col span={8}>
-                <Select placeholder="Province" className="border-gray-300 rounded-lg">
-                  {provinces.map((province) => (
-                    <Option key={province} value={province}>
-                      {province}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-              <Col span={8}>
-                <Select placeholder="Town" className="border-gray-300 rounded-lg">
-                  {towns.map((town) => (
-                    <Option key={town} value={town}>
-                      {town}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-            </Row>
-            <Input placeholder="Street" className="border-gray-300 rounded-lg"></Input>
-          </Form.Item>
 
-          <Form.Item
+
+
+
+
+
+        <Form.Item
+        label="Location"
+        name="location"
+        rules={[
+          {
+            required: true,
+            message: 'Please input the full location',
+          },
+        ]}
+        >
+            <Row gutter={8}>
+
+                 <Col span={6}>
+                 <Form.Item
+                   name={['location', 'Province']} // Using an array to group
+                   noStyle
+                 >
+                    <Select placeholder="Province" className="border-gray-300 rounded-lg" name="province">
+                     {provinces.map((province) => (
+                     <Option key={province} value={province}>
+                     {province}
+                     </Option>
+                     ))}
+                   </Select>
+                   </Form.Item>
+                 </Col>
+
+
+                <Col span={6}>
+                <Form.Item
+                   name={['location', 'Town']} // Using an array to group
+                   noStyle
+                 >
+                  <Select placeholder="Town" className="border-gray-300 rounded-lg" name="town">
+                    {towns.map((town) => (
+                     <Option key={town} value={town}>
+                     {town}
+                     </Option>
+                    ))}
+                 </Select>
+                 </Form.Item>
+                </Col>
+
+                <Col span={6}>
+                <Form.Item
+                   name={['location', 'Street']} // Using an array to group
+                   noStyle
+                 >
+                   <Input placeholder="Street" className="border-gray-300 rounded-lg" name="street" />
+                </Form.Item>
+                </Col>
+
+
+                <Col span={6}>
+                <Form.Item
+                   name={['location', 'UC']} // Using an array to group
+                   noStyle
+                 >
+                  <Select placeholder="UC" className="border-gray-300 rounded-lg" name="uc">
+                   {uc.map((uc)=>(
+                    <Option key={uc} value={uc}>
+                       {uc}
+                    </Option>
+                   ))
+
+                   }
+                  </Select>
+                  </Form.Item>
+                </Col>
+
+            </Row>
+        </Form.Item>
+      
+
+
+
+
+
+      <Form.Item
             label="Nature of ownership (sole proprietorship, cooperative, company etc)"
             name="nature"
             rules={[
@@ -266,7 +381,7 @@ function SubmissionPage() {
           
           <Form.Item
             label="Name of owner with parentage"
-            name="parentage"
+            name="OwnerName"
             rules={[
               {
                 required: true,
@@ -279,7 +394,7 @@ function SubmissionPage() {
           
           <Form.Item
             label="Full address of the owner with parentage"
-            name="address"
+            name="OwnerAddress"
             rules={[
               {
                 required: true,
@@ -292,7 +407,7 @@ function SubmissionPage() {
 
               <Form.Item
                 label="Telephonic address of the owner"
-                name="telegraphicAddress"
+                name="OwnerTelephonicAddress"
                 rules={[
                   {
                     required: true,
@@ -305,12 +420,13 @@ function SubmissionPage() {
 
               <Form.Item
                 label="Telephone Number (if any)"
-                name="telexNumber"
+                name="OwnerTelephoneNumber"
                 rules={[
                   {
                   
                     message: 'Please input the telephone number',
                   },
+                  { pattern: /^03[0-9]{9}$/, message: 'Phone Number should be in valid format' }
                 ]}
               >
                 <Input placeholder="Telephone number" className="border-gray-300 rounded-lg" />
@@ -320,7 +436,7 @@ function SubmissionPage() {
 
             <Form.Item
             label="Name of manager with parentage"
-            name="parentage"
+            name="ManagerName"
             rules={[
               {
                 required: true,
@@ -333,7 +449,7 @@ function SubmissionPage() {
 
           <Form.Item
             label="Address of manager with parentage"
-            name="parentage"
+            name="ManagerAddress"
             rules={[
               {
                 required: true,
@@ -346,185 +462,236 @@ function SubmissionPage() {
 
           <Form.Item
             label="Telephone number (if any) of manager with parentage"
-            name="parentage"
+            name="ManagerTelephoneNumber"
             rules={[
               {
                
                 message: 'Please input the telephone number of manager with parentage',
               },
+              { pattern: /^03[0-9]{9}$/, message: 'Phone Number should be in valid format' }
             ]}
           >
             <Input placeholder="Telephone number of manager with parentage" className="border-gray-300 rounded-lg" />
           </Form.Item>
         
 
-   <Form.Item
-            label="Size"
-            name="location"
-            rules={[
-              {
-                required: true,
-                message: 'Please enter your location',
-              },
-            ]}
-          >
-            <Row gutter={8}>
-              <Col span={8}>
-                <Select placeholder="Total Area (sqft)" className="border-gray-300 rounded-lg">
-                  {size.map((area) => (
-                    <Option key={area} value={area}>
-                      {area}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-              <Col span={8}>
-                <Select placeholder="Area of Pantry" className="border-gray-300 rounded-lg">
-                {size.map((area) => (
-                    <Option key={area} value={area}>
-                      {area}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-            </Row>
-           <Row gutter={8}>
-              <Col span={8}>
-                <Select placeholder="Area of seating capacity of dining hall" className="border-gray-300 rounded-lg">
-                {size.map((area) => (
-                    <Option key={area} value={area}>
-                      {area}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-              <Col span={8}>
-                <Select placeholder="Area of Kitchen" className="border-gray-300 rounded-lg">
-                {size.map((area) => (
-                    <Option key={area} value={area}>
-                      {area}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-            </Row>
-           
-        </Form.Item>
-
-        <Form.Item
-            label="Cost"
-            name="cost"
-            rules={[
-              {
-                required: true,
-                message: 'Please enter your location',
-              },
-            ]}
-          >
-            <Row gutter={8}>
-              <Col span={8}>
-                <Select placeholder="Furniture and Fixture" className="border-gray-300 rounded-lg">
-                  {costs.map((cost) => (
-                    <Option key={cost} value={cost}>
-                      {cost}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-              <Col span={8}>
-                <Select placeholder="Annual Rent" className="border-gray-300 rounded-lg">
-                  {costs.map((cost) => (
-                    <Option key={cost} value={cost}>
-                      {cost}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-            </Row>
-           <Row gutter={8}>
-              <Col span={8}>
-                <Select placeholder="Equipment" className="border-gray-300 rounded-lg">
-                  {costs.map((cost) => (
-                    <Option key={cost} value={cost}>
-                      {cost}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-              <Col span={8}>
-                <Select placeholder="Working Capital" className="border-gray-300 rounded-lg">
-                   {costs.map((cost) => (
-                    <Option key={cost} value={cost}>
-                      {cost}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-            </Row>
-           <Row gutter={8}>
-              <Col span={8}>
-                <Select placeholder="Total Investment" className="border-gray-300 rounded-lg">
-                    {costs.map((cost) => (
-                    <Option key={cost} value={cost}>
-                      {cost}
-                    </Option>
-                  ))}
-                </Select>
-                </Col>
-            </Row>
-           
-   </Form.Item>
-
-   <Form.Item
-            label="Furniture and Fixture (please give details separately for the dining hall and kitchen)"
-            name="cost"
-            rules={[
-              {
-                required: true,
-                message: 'Please enter your location',
-              },
-            ]}
-          >
-            <Row gutter={8}>
-              <Col span={8}>
-                <Input placeholder="Reception/Bill Counter" className="border-gray-300 rounded-lg"/>
-               
-              </Col>
-              <Col span={8}>
-                <Input placeholder="Telephone" className="border-gray-300 rounded-lg"/>
-              
-              </Col>
-            </Row>
-
-           <Row gutter={8}>
-              <Col span={8}>
-                <Input placeholder="Cloak room" className="border-gray-300 rounded-lg"/>
-                 
-              </Col>
-              <Col span={8}>
-                <Input placeholder="Toilet" className="border-gray-300 rounded-lg"/>
-                  
-              </Col>
-            </Row>
-
-       <Row gutter={8}>
-              <Col span={8}>
-                <Input placeholder="Car Park" className="border-gray-300 rounded-lg"/>
-              </Col>
-              <Col span={8}>
-                <Input placeholder="Entertainments" className="border-gray-300 rounded-lg"/>  
-                 
-              </Col>
-            </Row>
+          <Form.Item
+  label="Size"
+  name="size" // Changed to a more descriptive name
+  rules={[
+    {
+      validator: (_, value) => {
+        if (!value || !value.totalArea || !value.pantryArea || !value.diningArea || !value.kitchenArea) {
+          return Promise.reject(new Error('Please enter all size fields'));
+        }
+        return Promise.resolve();
+      },
+    },
+  ]}
+>
+  <Row gutter={8}>
+    <Col span={8}>
+      <Form.Item name={['size', 'totalArea']} noStyle>
+        <Select placeholder="Total Area (sqft)" className="border-gray-300 rounded-lg">
+          {size.map((area) => (
+            <Option key={area} value={area}>
+              {area}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+    </Col>
+    <Col span={8}>
+      <Form.Item name={['size', 'pantryArea']} noStyle>
+        <Select placeholder="Area of Pantry" className="border-gray-300 rounded-lg">
+          {size.map((area) => (
+            <Option key={area} value={area}>
+              {area}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+    </Col>
+  </Row>
+  <Row gutter={8}>
+    <Col span={8}>
+      <Form.Item name={['size', 'diningArea']} noStyle>
+        <Select placeholder="Area of seating capacity of dining hall" className="border-gray-300 rounded-lg">
+          {size.map((area) => (
+            <Option key={area} value={area}>
+              {area}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+    </Col>
+    <Col span={8}>
+      <Form.Item name={['size', 'kitchenArea']} noStyle>
+        <Select placeholder="Area of Kitchen" className="border-gray-300 rounded-lg">
+          {size.map((area) => (
+            <Option key={area} value={area}>
+              {area}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+    </Col>
+  </Row>
+</Form.Item>
 
 
-           <Row gutter={8}>
-              <Col span={8}>
-                <Input placeholder="Air conditioning or cooling and heating according to local conditions and weather" className="border-gray-300 rounded-lg"/>  
-              </Col>
-            </Row>
-           
-   </Form.Item>
+<Form.Item
+  label="Cost"
+  name="cost" // Main name for the cost structure
+  rules={[
+    {
+      validator: (_, value) => {
+        // Check if the value exists and if all sub-fields are filled
+        if (!value || !value.furniture || !value.rent || !value.equipment || !value.capital || !value.investment) {
+          return Promise.reject(new Error('Please enter all cost fields'));
+        }
+        return Promise.resolve();
+      },
+    },
+  ]}
+>
+  <Row gutter={8}>
+    <Col span={8}>
+      <Form.Item name={['cost', 'furniture']} noStyle>
+        <Select placeholder="Furniture and Fixture" className="border-gray-300 rounded-lg">
+          {costs.map((cost) => (
+            <Option key={cost} value={cost}>
+              {cost}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+    </Col>
+    <Col span={8}>
+      <Form.Item name={['cost', 'rent']} noStyle>
+        <Select placeholder="Annual Rent" className="border-gray-300 rounded-lg">
+          {costs.map((cost) => (
+            <Option key={cost} value={cost}>
+              {cost}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+    </Col>
+  </Row>
+  <Row gutter={8}>
+    <Col span={8}>
+      <Form.Item name={['cost', 'equipment']} noStyle>
+        <Select placeholder="Equipment" className="border-gray-300 rounded-lg">
+          {costs.map((cost) => (
+            <Option key={cost} value={cost}>
+              {cost}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+    </Col>
+    <Col span={8}>
+      <Form.Item name={['cost', 'capital']} noStyle>
+        <Select placeholder="Working Capital" className="border-gray-300 rounded-lg">
+          {costs.map((cost) => (
+            <Option key={cost} value={cost}>
+              {cost}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+    </Col>
+  </Row>
+  <Row gutter={8}>
+    <Col span={8}>
+      <Form.Item name={['cost', 'investment']} noStyle>
+        <Select placeholder="Total Investment" className="border-gray-300 rounded-lg">
+          {costs.map((cost) => (
+            <Option key={cost} value={cost}>
+              {cost}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+    </Col>
+  </Row>
+</Form.Item>
+
+
+
+<Form.Item
+  label="Furniture and Fixture (please give details separately for the dining hall and kitchen)"
+  name="furniture" // Change the name to allow for detailed validation of individual items
+  rules={[
+    {
+      validator: (_, value) => {
+        // Validate that at least one of the fields has been filled
+        if (
+          !value ||
+          !value.reception ||
+          !value.telephone ||
+          !value.cloakRoom ||
+          !value.toilet ||
+          !value.carPark ||
+          !value.entertainment ||
+          !value.airConditioning
+        ) {
+          return Promise.reject(new Error('Please enter details for all furniture and fixture items'));
+        }
+        return Promise.resolve();
+      },
+    },
+  ]}
+>
+  <Row gutter={8}>
+    <Col span={8}>
+      <Form.Item name={['furniture', 'reception']} noStyle>
+        <Input placeholder="Reception/Bill Counter" className="border-gray-300 rounded-lg" />
+      </Form.Item>
+    </Col>
+    <Col span={8}>
+      <Form.Item name={['furniture', 'telephone']} noStyle>
+        <Input placeholder="Telephone" className="border-gray-300 rounded-lg" />
+      </Form.Item>
+    </Col>
+  </Row>
+
+  <Row gutter={8}>
+    <Col span={8}>
+      <Form.Item name={['furniture', 'cloakRoom']} noStyle>
+        <Input placeholder="Cloak room" className="border-gray-300 rounded-lg" />
+      </Form.Item>
+    </Col>
+    <Col span={8}>
+      <Form.Item name={['furniture', 'toilet']} noStyle>
+        <Input placeholder="Toilet" className="border-gray-300 rounded-lg" />
+      </Form.Item>
+    </Col>
+  </Row>
+
+  <Row gutter={8}>
+    <Col span={8}>
+      <Form.Item name={['furniture', 'carPark']} noStyle>
+        <Input placeholder="Car Park" className="border-gray-300 rounded-lg" />
+      </Form.Item>
+    </Col>
+    <Col span={8}>
+      <Form.Item name={['furniture', 'entertainment']} noStyle>
+        <Input placeholder="Entertainments" className="border-gray-300 rounded-lg" />
+      </Form.Item>
+    </Col>
+  </Row>
+
+  <Row gutter={8}>
+    <Col span={8}>
+      <Form.Item name={['furniture', 'airConditioning']} noStyle>
+        <Input placeholder="Air conditioning or cooling and heating according to local conditions and weather" className="border-gray-300 rounded-lg" />
+      </Form.Item>
+    </Col>
+  </Row>
+</Form.Item>
+
      
 
         <Form.Item
@@ -537,7 +704,13 @@ function SubmissionPage() {
               },
             ]}
           >
-            <Input  className="border-gray-300 rounded-lg" />
+            <Select placeholder="Cuisines" className="border-gray-300 rounded-lg">
+          {cuisines.map((cuisine) => (
+            <Option key={cuisine} value={cuisine}>
+              {cuisine}
+            </Option>
+          ))}
+         </Select>
           </Form.Item>
 
           <Form.Item
@@ -556,28 +729,37 @@ function SubmissionPage() {
           <EmployeeTable />
           
           <Form.Item
-            label="Rates Charged"
-            name="rates"
-            rules={[
-              {
-                required: true,
-                message: 'Please input the rates charged',
-              },
-            ]}
-          >
-            <Input placeholder='Immediately before 1st Jan. 1977' className="border-gray-300 rounded-lg" />
-            <Input  placeholder='Present with date from which prescribed'className="border-gray-300 rounded-lg" />
-          </Form.Item>
+  label="Rates Charged"
+  required
+>
+  <Form.Item
+    name="firstRate" // Unique name for the first input
+    rules={[{ required: true, message: 'Please input the first rate charged' }]}
+    noStyle // Use noStyle to remove extra margin
+  >
+    <Input placeholder='Immediately before 1st Jan. 1977' className="border-gray-300 rounded-lg" />
+  </Form.Item>
+  <Form.Item
+    name="secondRate" // Unique name for the second input
+    rules={[{ required: true, message: 'Please input the second rate charged' }]}
+    noStyle // Use noStyle to remove extra margin
+  >
+    <Input placeholder='Present with date from which prescribed' className="border-gray-300 rounded-lg" />
+  </Form.Item>
+</Form.Item>
 
-          <Form.Item>
-            <div className="flex justify-center">
-            <Form.Item className="text-center">
-                    <button  htmlType="submit" className="bg-custom-blue text-white text-white px-20 py-2 rounded-md">
-                            Save
-                     </button>
-            </Form.Item>
-            </div>
-          </Form.Item>
+                   
+                   
+                   
+                   
+         <Form.Item className="text-center">
+              <button  htmlType="submit" disabled={false} className="bg-custom-blue text-white text-white px-20 py-2 rounded-md">
+                  Enter
+              </button>
+         </Form.Item>
+       
+       
+       
         </Form>
       </div>
     </div>

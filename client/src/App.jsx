@@ -42,6 +42,7 @@ function App() {
             <Route path="/dts" element={<DTS/>}/>
             <Route path="/tepa" element={<TEPA/>}/>
             <Route path="/wasa" element={<WASA/>}/>
+            <Route path="/dts" element={<DTS/>}/>
             <Route path="/billing" element={<BillingPage/>}/>
             <Route path="/about" element={<AboutUs/>}/>
             <Route path="/contact" element={<Contact/>}/>

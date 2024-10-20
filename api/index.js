@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const UserModel = require('./models/User.js');
 // const SubadminModel = require('./models/Subadmin.js');
 const ContactModel = require('./models/Contact.js');
+const Restaurant = require('./models/restaurantSchema.js');
+const Wasa = require('./models/Wasa.js');
 const nodemailer = require("nodemailer");
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes')
@@ -32,6 +34,56 @@ app.use(cors({
 
 mongoose.connect('mongodb://localhost:27017/PRBP', { useNewUrlParser: true, useUnifiedTopology: true }).then(() => console.log('MongoDB connected'))
 .catch(err => console.error('Failed to connect to MongoDB', err));;
+
+
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      cb(null, './uploads'); // Directory to save uploaded files
+  },
+  filename: (req, file, cb) => {
+      cb(null, `${Date.now()}_${file.originalname}`); // Save files with a unique name
+  }
+});
+
+const upload = multer({ storage });
+
+app.post('/wasa', upload.fields([
+  { name: 'ownershipCertificate' },
+  { name: 'buildingPlan' },
+  { name: 'locationPlan' },
+  { name: 'commercializationCertificate' },
+  { name: 'authorityLetter' }
+]), async (req, res) => {
+  try {
+      // Extract the uploaded files from the request
+      const { ownershipCertificate, buildingPlan, locationPlan, commercializationCertificate, authorityLetter } = req.files;
+
+      console.log(req.files);
+
+      // Create a new WASA form record in the database
+      const newForm = new Wasa({
+          ownershipCertificate: ownershipCertificate[0].path,
+          buildingPlan: buildingPlan[0].path,
+          locationPlan: locationPlan[0].path,
+          commercializationCertificate: commercializationCertificate[0].path,
+          authorityLetter: authorityLetter[0].path
+      });
+
+      // Save the form data
+      await newForm.save();
+
+      res.status(200).json({ message: 'Form submitted successfully' });
+  } catch (error) {
+      console.error('Error submitting form:', error);
+      res.status(500).json({ message: 'Error submitting form', error: error.message });
+  }
+});
+
+
+
+
+
 
 
 
@@ -223,6 +275,60 @@ app.post('/signup', async (req, res) => {
 //         res.json({message: "login unsuccessful"});
 //     }
 // });
+      //Create a new admin user
+  //     const newUser = new SubadminModel({
+  //       cnic : cnic,
+  //       fname: firstName,
+  //       lname: lastName,
+  //       phone: number,
+  //       email: email,
+  //       password: password,
+  //       role: role
+  //     });
+  
+  //     await newUser.save();
+  //     console.log("org of new subadmin: ", newUser.cnic);
+  //     //res.status(201).send('User created successfully');
+  //     res.json({message: "User created successfully"});
+  //   } catch (err) {
+  //     console.error("Error creating user", err);
+  //     //res.status(500).send('Error creating user');
+  //   }
+  // });
+
+  app.post('/submission', async (req, res) => {
+    try {
+      const restaurant = new Restaurant(req.body);
+      await restaurant.save();
+      // Only send one response
+      res.status(201).json({ message: "Form submitted successfully", restaurant });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+
+  app.post('/wasa', async (req, res) => {
+    try {
+      const wasaForm = new Wasa(req.body);
+      await wasaForm.save();
+      // Only send one response
+      res.status(201).json({ message: "Form submitted successfully", wasaForm });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+
+  app.post('/adminLogin', async (req, res) => {
+    const { email, password } = req.body;
+    if(email==="ayesha@gmail.com" && password==="123"){
+        res.json({message: "login successful"});
+    }
+    else{
+        res.json({message: "login unsuccessful"});
+    }
+});
   
   app.post('/userLogin', async (req, res) => {
     const { email, password } = req.body;
@@ -322,8 +428,7 @@ app.post("/verifyOTP", async (req, res) => {
 const PINATA_API_KEY = '44ab669b997aa2b47652';
 const PINATA_API_SECRET = '59f5dc6834cd964d1a698e95764f3d02ba3429238bae09a2103061f09b37cc68';
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+
 
 app.post('/uploadToIpfs', upload.single('file'), async (req, res) => {
   try {
