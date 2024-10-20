@@ -106,6 +106,16 @@ export default function SubAdminSignup() {
             <Option value="Police Clearance">Police Clearance</Option>
           </Select>
         </Form.Item>
+        <Text className='heading-2'>Role</Text>
+        <Form.Item
+          name='role'
+          rules={[{ required: true, message: 'select role' }]}
+        >
+          <Select placeholder="select role">
+            <Option value="admin">Admin</Option>
+            <Option value="subadmin">Sub Admin</Option>
+          </Select>
+        </Form.Item>
 
         <Form.Item name='submit'>
           <Button type='primary' htmlType='submit'>Submit</Button>
