@@ -44,7 +44,7 @@ const restaurantSchema = new mongoose.Schema({
     type: String,
    
   },
-  OwnerTelegraphicAddress: {
+  OwnerTelephonicAddress: {
     type: String,
     
   },
@@ -66,17 +66,17 @@ const restaurantSchema = new mongoose.Schema({
     type: String,
   },
   size: {
-    totalArea: { type: String, required: true },
-    pantryArea: { type: String, required: true },
-    diningArea: { type: String, required: true },
-    kitchenArea: { type: String, required: true }
+    totalArea: { type: String },
+    pantryArea: { type: String },
+    diningArea: { type: String },
+    kitchenArea: { type: String}
   },
   cost: {
-    furniture: { type: String, required: true },
-    rent: { type: String, required: true },
-    equipment: { type: String, required: true },
-    capital: { type: String, required: true },
-    investment: { type: String, required: true }
+    furniture: { type: String },
+    rent: { type: String },
+    equipment: { type: String },
+    capital: { type: String },
+    investment: { type: String }
   },
   furniture: {
     reception: { type: String},
