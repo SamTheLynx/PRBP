@@ -1,11 +1,13 @@
 import { useNavigate } from 'react-router-dom';
-import { Button, Form, Input, Typography } from 'antd';
+import { Button, Form, Input, Typography, Select } from 'antd';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 const { Title, Text } = Typography;
 
 export default function Signup() {
   const navigate = useNavigate();
+
 
   const onFinish = async (values) => {
     console.log("user created", values);
@@ -32,6 +34,17 @@ export default function Signup() {
           <div className="text-center mb-6">
           <h1 className="text-center text-custom-blue text-3xl mb-6">Sign up</h1>
           </div>
+
+          <Text className="block mb-1">Enter Role</Text>
+          <Form.Item name="role" rules={[{ required: true, message: 'Please select a role' }]}>
+            <Select placeholder="Select a role">
+              {["Admin", "Sub-Admin", "Regular User"].map(role => (
+                <Select.Option key={role} value={role}>
+                  {role}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
 
           <Text className="block mb-1">First Name</Text>
           <Form.Item name='firstName' rules={[
@@ -65,7 +78,7 @@ export default function Signup() {
           <Text className="block mb-1">Phone Number</Text>
           <Form.Item name='phoneNumber' rules={[
             { required: true, message: 'Please enter your phone number' },
-            { type: 'string', message: 'Please enter a valid phone number' }
+            { pattern: /^03[0-9]{9}$/, message: 'Phone Number should be in valid format' }
           ]}>
             <Input className='border-gray-300 rounded-lg' placeholder='Enter your phone number' />
           </Form.Item>
@@ -73,9 +86,9 @@ export default function Signup() {
           <Text className="block mb-1">CNIC</Text>
           <Form.Item name='cnic' rules={[
             { required: true, message: 'Please enter your CNIC' },
-            { type: 'string', message: 'Please enter a valid CNIC' }
+            { pattern: /^[0-9]{5}-[0-9]{7}-[0-9]$/, message: 'CNIC must be in the format 3xxxx-xxxxxxx-x' }
           ]}>
-            <Input className='border-gray-300 rounded-lg' placeholder='Enter your CNIC' />
+            <Input className='border-gray-300 rounded-lg' placeholder='Enter your CNIC'  />
           </Form.Item>
 
           <Form.Item className="text-center">

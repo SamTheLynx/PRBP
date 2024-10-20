@@ -8,7 +8,7 @@ const SubadminSchema = new Schema({
     phone: String,
     email: String,
     password: String,
-    organisation: String
+    role: String
 })
 
 const SubadminModel = mongoose.model('Subadmin', SubadminSchema);
