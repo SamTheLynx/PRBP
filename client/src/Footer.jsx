@@ -36,13 +36,12 @@ const Footer = () => {
     </div>
   </div>
 
-  <div class="bg-super-dark-blue mt-5">
-    <div class="max-w-screen-xl mx-auto py-1 text-center">
-      <span class="text-slate-200">Copyright © 2023 Pakistan Restaurant Business Portal, Government of Pakistan.</span>
-    </div>
-  </div>
-</footer>
-
+            <div class="bg-super-dark-blue mt-5">
+                <div class="max-w-screen-xl mx-auto py-1 text-center">
+                <span class="text-slate-200">Copyright © 2023 Pakistan Restaurant Business Portal, Government of Pakistan.</span>
+                </div>
+            </div>
+        </footer>
     );
 };
 
