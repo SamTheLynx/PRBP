@@ -3,10 +3,13 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const UserModel = require('./models/User.js');
-const SubadminModel = require('./models/Subadmin.js');
+// const SubadminModel = require('./models/Subadmin.js');
 const ContactModel = require('./models/Contact.js');
 const nodemailer = require("nodemailer");
-
+const dotenv = require('dotenv');
+const authRoutes = require('./routes/authRoutes')
+// Load environment variables
+dotenv.config();
 //for ipfs
 const axios = require('axios');
 const fs = require('fs');
@@ -18,41 +21,47 @@ const PORT=process.env.PORT||5000
 const app = express();
 app.use(bodyParser.json());
 app.use(express.json());
+app.use('/api', authRoutes);
+
+
 
 app.use(cors({
     credentials: true,
     origin: 'http://localhost:3000',
 }))
 
-mongoose.connect('mongodb://localhost:27017/Restaurant', { useNewUrlParser: true, useUnifiedTopology: true }).then(() => console.log('MongoDB connected'))
+mongoose.connect('mongodb://localhost:27017/PRBP', { useNewUrlParser: true, useUnifiedTopology: true }).then(() => console.log('MongoDB connected'))
 .catch(err => console.error('Failed to connect to MongoDB', err));;
+
+
 
 app.get('/test', (req,res)=>{
     res.json('test ok')
 })
 
-app.get("/api/subadmins", async (req, res) => {
-  try {
-    const subAdmins = await SubadminModel.find();
-    res.json(subAdmins);
-  } catch (error) {
-    console.error("Error fetching SubAdmins:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
-app.delete("/api/subadmins/:id", async (req, res) => {
-  try {
-    const subAdminId = req.params.id;
-    const deletedSubAdmin = await SubadminModel.findByIdAndDelete(subAdminId);
-    if (!deletedSubAdmin) {
-      return res.status(404).json({ message: "SubAdmin not found" });
-    }
-    res.status(200).json({ message: "SubAdmin deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting SubAdmin:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
+// app.get("/api/subadmins", async (req, res) => {
+//   try {
+//     const subAdmins = await SubadminModel.find();
+//     res.json(subAdmins);
+//   } catch (error) {
+//     console.error("Error fetching SubAdmins:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+
+// app.delete("/api/subadmins/:id", async (req, res) => {
+//   try {
+//     const subAdminId = req.params.id;
+//     const deletedSubAdmin = await SubadminModel.findByIdAndDelete(subAdminId);
+//     if (!deletedSubAdmin) {
+//       return res.status(404).json({ message: "SubAdmin not found" });
+//     }
+//     res.status(200).json({ message: "SubAdmin deleted successfully" });
+//   } catch (error) {
+//     console.error("Error deleting SubAdmin:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
 
 // Endpoint to send rejection email
 app.post('/send-rejection-email', async (req, res) => {
@@ -157,62 +166,63 @@ app.post('/signup', async (req, res) => {
     }
   });
 
-  app.post('/subadminSignup', async (req, res) => {
-    const { firstName, lastName, email, password, number, cnic, organization} = req.body;
-    console.log("Received data:", organization);
-    console.log("req.body: ", req.body)
-    try {
-      // Check if the email is already registered
-      const existingUser = await SubadminModel.findOne({ email });
-      if (existingUser) {
-        return res.status(400).send('Email already registered');
-      }
+//   app.post('/subadminSignup', async (req, res) => {
+//     const { firstName, lastName, email, password, number, cnic, organization,role} = req.body;
+//     console.log("Received data:", organization);
+//     console.log("req.body: ", req.body)
+//     try {
+//       // Check if the email is already registered
+//       const existingUser = await SubadminModel.findOne({ email });
+//       if (existingUser) {
+//         return res.status(400).send('Email already registered');
+//       }
   
-      //Create a new admin user
-      const newUser = new SubadminModel({
-        cnic : cnic,
-        fname: firstName,
-        lname: lastName,
-        phone: number,
-        email: email,
-        password: password,
-        organisation: organization
-      });
+//       //Create a new admin user
+//       const newUser = new SubadminModel({
+//         cnic : cnic,
+//         fname: firstName,
+//         lname: lastName,
+//         phone: number,
+//         email: email,
+//         password: password,
+//         organisation: organization,
+//         role:role,
+//       });
   
-      await newUser.save();
-      console.log("org of new subadmin: ", newUser.cnic);
-      //res.status(201).send('User created successfully');
-      res.json({message: "User created successfully"});
-    } catch (err) {
-      console.error("Error creating user", err);
-      //res.status(500).send('Error creating user');
-    }
-  });
+//       await newUser.save();
+//       console.log("org of new subadmin: ", newUser.cnic);
+//       //res.status(201).send('User created successfully');
+//       res.json({message: "User created successfully"});
+//     } catch (err) {
+//       console.error("Error creating user", err);
+//       //res.status(500).send('Error creating user');
+//     }
+//   });
 
-  app.post('/subadminLogin', async (req, res) => {
-    const { email, password } = req.body;
+//   app.post('/subadminLogin', async (req, res) => {
+//     const { email, password } = req.body;
 
-    try {
-        const subadmin = await SubadminModel.findOne({ email, password });
-        if (!subadmin) {
-            return res.status(401).send('Invalid credentials');
-        }
-        res.json({message: 'login successful', subadmin: subadmin});
-    } catch (err) {
-        console.error("Error finding subadmin", err);
-        res.status(500).send('Error finding subadmin');
-    }
-  });
+//     try {
+//         const subadmin = await SubadminModel.findOne({ email, password });
+//         if (!subadmin) {
+//             return res.status(401).send('Invalid credentials');
+//         }
+//         res.json({message: 'login successful', subadmin: subadmin});
+//     } catch (err) {
+//         console.error("Error finding subadmin", err);
+//         res.status(500).send('Error finding subadmin');
+//     }
+//   });
 
-  app.post('/adminLogin', async (req, res) => {
-    const { email, password } = req.body;
-    if(email==="ayesha@gmail.com" && password==="123"){
-        res.json({message: "login successful"});
-    }
-    else{
-        res.json({message: "login unsuccessful"});
-    }
-});
+//   app.post('/adminLogin', async (req, res) => {
+//     const { email, password } = req.body;
+//     if(email==="ayesha@gmail.com" && password==="123"){
+//         res.json({message: "login successful"});
+//     }
+//     else{
+//         res.json({message: "login unsuccessful"});
+//     }
+// });
   
   app.post('/userLogin', async (req, res) => {
     const { email, password } = req.body;
