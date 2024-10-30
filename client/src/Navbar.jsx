@@ -83,7 +83,7 @@ const Navbar = () => {
         <ul>
           {!ReduxAdmin.loggedIn&& !ReduxSubadmin.loggedIn &&(<ul>
             <Link
-              className="no-underline" to={ReduxUser.loggedIn ? "/submission" : "/loginOptions"} >
+              className="no-underline" to={ReduxUser.loggedIn ? "/cnic" : "/loginOptions"} >
               <li>Apply For Certificate</li>
             </Link>
 

@@ -35,16 +35,6 @@ export default function Signup() {
           <h1 className="text-center text-custom-blue text-3xl mb-6">Sign up</h1>
           </div>
 
-          <Text className="block mb-1">Enter Role</Text>
-          <Form.Item name="role" rules={[{ required: true, message: 'Please select a role' }]}>
-            <Select placeholder="Select a role">
-              {["Admin", "Sub-Admin", "Regular User"].map(role => (
-                <Select.Option key={role} value={role}>
-                  {role}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
 
           <Text className="block mb-1">First Name</Text>
           <Form.Item name='firstName' rules={[

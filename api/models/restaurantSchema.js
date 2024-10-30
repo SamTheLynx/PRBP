@@ -29,9 +29,9 @@ const restaurantSchema = new mongoose.Schema({
   },
   location: {
     Province: { type: String },
-    Town: { type: String },
-    Street: { type: String },
-    UC: { type: String }
+    City:{ type: String },
+    Zone: { type: String },
+    Tehsil: { type: String }
   
   },
   nature: {

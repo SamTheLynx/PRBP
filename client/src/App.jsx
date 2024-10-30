@@ -23,9 +23,9 @@ import ViewSubAdmins from './pages/AdminPortal/ViewSubAdmins'
 import OwnershipTransfer from './pages/OwnerTransfer';
 import CNIC_Upload from './pages/CNIC_Upload';
 import AdminSidebar from './pages/AdminPortal/AdminSidebar.jsx';
-import TEPA from './pages/TEPA.jsx';
 import WASA from './pages/WASA.jsx';
 import DTS from './pages/DTS.jsx';
+import Commercialization from './pages/Commercialization.jsx';
 
 function App() {
   return(
@@ -40,7 +40,7 @@ function App() {
             <Route path="/submission" element={<SubmissionPage/>}/>
             <Route path="/cnic" element={<CNIC_Upload/>}/>
             <Route path="/dts" element={<DTS/>}/>
-            <Route path="/tepa" element={<TEPA/>}/>
+            <Route path="/commercialization" element={<Commercialization/>}/>
             <Route path="/wasa" element={<WASA/>}/>
             <Route path="/dts" element={<DTS/>}/>
             <Route path="/billing" element={<BillingPage/>}/>

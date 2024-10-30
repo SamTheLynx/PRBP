@@ -1,34 +1,59 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Form, Upload, Button, Typography } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { Form, Upload, Input, Button, Typography, message } from 'antd';
+import { UploadOutlined, DownOutlined, UpOutlined } from '@ant-design/icons';
 
 const { Title } = Typography;
 
 const WASA = () => {
   const [form] = Form.useForm();
+  const [isUpperFieldsComplete, setIsUpperFieldsComplete] = useState(false);
+  const [showAdditionalFields, setShowAdditionalFields] = useState(false);
   const navigate = useNavigate();
 
-  const onFinish = async (values) => {
+  const requiredFields = [
+    'ownershipCertificate', 'buildingPlan', 
+    'locationPlan', 'authorityLetter'
+  ];
+
+  const checkUpperFieldsCompletion = (changedValues, allValues) => {
+    const areAllRequiredFieldsComplete = requiredFields.every(
+      (field) => allValues[field] && allValues[field].length > 0
+    );
+    setIsUpperFieldsComplete(areAllRequiredFieldsComplete);
+  };
+
+  const toggleAdditionalFields = () => {
+    setShowAdditionalFields(!showAdditionalFields);
+  };
+
+  const onFinish = async () => {
+    const values = form.getFieldsValue();
     const formData = new FormData();
 
     // Append files to FormData
-    if (values.ownershipCertificate) formData.append('ownershipCertificate', values.ownershipCertificate.file.originFileObj);
-    if (values.buildingPlan) formData.append('buildingPlan', values.buildingPlan.file.originFileObj);
-    if (values.locationPlan) formData.append('locationPlan', values.locationPlan.file.originFileObj);
-    if (values.commercializationCertificate) formData.append('commercializationCertificate', values.commercializationCertificate.file.originFileObj);
-    if (values.authorityLetter) formData.append('authorityLetter', values.authorityLetter.file.originFileObj);
+    [
+      'ownershipCertificate', 'buildingPlan', 
+      'locationPlan', 'authorityLetter', 'application', 
+      'drawings', 'parkingAgreement', 
+      'affidavit', 'ekhidmatSlip'
+    ].forEach((field) => {
+      if (values[field] && values[field][0]) {
+        formData.append(field, values[field][0].originFileObj);
+      }
+    });
 
     try {
       const response = await axios.post('http://localhost:5000/wasa', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       if (response.data.message === "Form submitted successfully") {
-        navigate('/tepa');
+        navigate('/billing');
       }
     } catch (error) {
-      console.error('Error submitting form:', error.response.data.message || error.message);
+      console.error('Error submitting form:', error.response?.data?.message || error.message);
+      message.error('Failed to submit form');
     }
   };
 
@@ -39,47 +64,91 @@ const WASA = () => {
           Required Documents for the Issuance of NOC Regarding Sewerage Services Augmentation Charges of WASA Lahore
         </h1>
 
-        <Form layout="vertical" form={form} onFinish={onFinish}>
-
-          {/* 2. Ownership Certificate */}
-          <Form.Item label="2. Ownership Certificate" name="ownershipCertificate">
+        <Form
+          layout="vertical"
+          form={form}
+          onFinish={onFinish}
+          onValuesChange={checkUpperFieldsCompletion}
+        >
+          {/* Upper Fields */}
+          <Form.Item label="Ownership Certificate" name="ownershipCertificate" valuePropName="fileList" getValueFromEvent={(e) => e?.fileList}>
             <Upload name="ownershipCertificate" listType="picture" beforeUpload={() => false}>
               <Button icon={<UploadOutlined />}>Upload Ownership Certificate</Button>
             </Upload>
           </Form.Item>
 
-          {/* 3. Copy of Building Plan (2-Sets) */}
-          <Form.Item label="3. Copy of Building Plan (2-Sets)" name="buildingPlan">
+          <Form.Item label="Building Plan (2-Sets)" name="buildingPlan" valuePropName="fileList" getValueFromEvent={(e) => e?.fileList}>
             <Upload name="buildingPlan" listType="picture" beforeUpload={() => false}>
-              <Button icon={<UploadOutlined />}>Upload Building Plan (2-Sets)</Button>
+              <Button icon={<UploadOutlined />}>Upload Building Plan</Button>
             </Upload>
           </Form.Item>
 
-          {/* 4. Location Plan Google Image */}
-          <Form.Item label="4. Location Plan Google Image" name="locationPlan">
+          <Form.Item label="Location Plan (Google Image)" name="locationPlan" valuePropName="fileList" getValueFromEvent={(e) => e?.fileList}>
             <Upload name="locationPlan" listType="picture" beforeUpload={() => false}>
-              <Button icon={<UploadOutlined />}>Upload Location Plan (Google Image)</Button>
+              <Button icon={<UploadOutlined />}>Upload Location Plan</Button>
             </Upload>
           </Form.Item>
 
-          {/* 5. Commercialization Certificate */}
-          <Form.Item label="5. Commercialization Certificate" name="commercializationCertificate">
-            <Upload name="commercializationCertificate" listType="picture" beforeUpload={() => false}>
-              <Button icon={<UploadOutlined />}>Upload Commercialization Certificate</Button>
-            </Upload>
-          </Form.Item>
-
-          {/* 6. Authority Letter */}
-          <Form.Item label="6. Authority Letter" name="authorityLetter">
+          <Form.Item label="Authority Letter" name="authorityLetter" valuePropName="fileList" getValueFromEvent={(e) => e?.fileList}>
             <Upload name="authorityLetter" listType="picture" beforeUpload={() => false}>
               <Button icon={<UploadOutlined />}>Upload Authority Letter</Button>
             </Upload>
           </Form.Item>
 
+          {/* Toggle Arrow Icon */}
+          <div className="text-center my-4 cursor-pointer" onClick={toggleAdditionalFields}>
+            {showAdditionalFields ? (
+              <UpOutlined style={{ fontSize: '24px', color: '#1890ff' }} />
+            ) : (
+              <DownOutlined style={{ fontSize: '24px', color: '#1890ff' }} />
+            )}
+          </div>
+
+          {/* Conditional Fields */}
+          {showAdditionalFields && (
+            <>
+              <h1 className="text-center text-custom-blue text-3xl mb-6">Checklist for execution of parking Agreement</h1>
+
+              <Form.Item label="Application to Chief Engineer" name="application" valuePropName="fileList" getValueFromEvent={(e) => e?.fileList}>
+                <Upload name="application" listType="picture" beforeUpload={() => false}>
+                  <Button icon={<UploadOutlined />}>Upload Application</Button>
+                </Upload>
+              </Form.Item>
+
+              <Form.Item label="Drawings (3 sets, Plotter Size)" name="drawings" valuePropName="fileList" getValueFromEvent={(e) => e?.fileList}>
+                <Upload name="drawings" listType="picture" beforeUpload={() => false}>
+                  <Button icon={<UploadOutlined />}>Upload Drawings</Button>
+                </Upload>
+              </Form.Item>
+
+              <Form.Item label="Parking Agreement on Online Stamp Paper" name="parkingAgreement" valuePropName="fileList" getValueFromEvent={(e) => e?.fileList}>
+                <Upload name="parkingAgreement" listType="picture" beforeUpload={() => false}>
+                  <Button icon={<UploadOutlined />}>Upload Parking Agreement</Button>
+                </Upload>
+              </Form.Item>
+
+              <Form.Item label="Affidavit on Rs.300 Stamp Paper" name="affidavit" valuePropName="fileList" getValueFromEvent={(e) => e?.fileList}>
+                <Upload name="affidavit" listType="picture" beforeUpload={() => false}>
+                  <Button icon={<UploadOutlined />}>Upload Affidavit</Button>
+                </Upload>
+              </Form.Item>
+
+              <Form.Item label="Contact Details for Correspondence / Site Visit" name="contactDetails">
+                <Input placeholder="Enter Contact Details" />
+              </Form.Item>
+
+              <Form.Item label="Copy of E-Khidmat Slip" name="ekhidmatSlip" valuePropName="fileList" getValueFromEvent={(e) => e?.fileList}>
+                <Upload name="ekhidmatSlip" listType="picture" beforeUpload={() => false}>
+                  <Button icon={<UploadOutlined />}>Upload E-Khidmat Slip</Button>
+                </Upload>
+              </Form.Item>
+            </>
+          )}
+
           {/* Submit Button */}
           <Form.Item className="text-center">
-            <Button htmlType="submit" className="bg-custom-blue text-white px-20 py-2 rounded-md">
-              Enter
+            <Button type="primary" htmlType="submit" className="bg-custom-blue text-white px-20 py-2 rounded-md">
+              Submit
             </Button>
           </Form.Item>
         </Form>

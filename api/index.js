@@ -7,6 +7,9 @@ const UserModel = require('./models/User.js');
 const ContactModel = require('./models/Contact.js');
 const Restaurant = require('./models/restaurantSchema.js');
 const Wasa = require('./models/Wasa.js');
+const CNIC = require ('./models/CNIC.js');
+const DTS = require('./models/DTS.js')
+const Commercialization = require ('./models/Commercialization.js')
 const nodemailer = require("nodemailer");
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes')
@@ -48,38 +51,159 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-app.post('/wasa', upload.fields([
-  { name: 'ownershipCertificate' },
-  { name: 'buildingPlan' },
-  { name: 'locationPlan' },
-  { name: 'commercializationCertificate' },
-  { name: 'authorityLetter' }
-]), async (req, res) => {
-  try {
+app.post(
+  '/wasa',
+  upload.fields([
+    { name: 'ownershipCertificate' },
+    { name: 'buildingPlan' },
+    { name: 'locationPlan' },
+    { name: 'authorityLetter' },
+    { name: 'application' },
+    { name: 'drawings' },
+    { name: 'parkingAgreement' },
+    { name: 'affidavit' },
+    { name: 'ekhidmatSlip' }
+  ]),
+  async (req, res) => {
+    try {
       // Extract the uploaded files from the request
-      const { ownershipCertificate, buildingPlan, locationPlan, commercializationCertificate, authorityLetter } = req.files;
+      const {
+        ownershipCertificate,
+        buildingPlan,
+        locationPlan,
+        authorityLetter,
+        application,
+        drawings,
+        parkingAgreement,
+        affidavit,
+        ekhidmatSlip
+      } = req.files;
 
-      console.log(req.files);
+      console.log(req.files); // Log files for debugging
 
       // Create a new WASA form record in the database
       const newForm = new Wasa({
-          ownershipCertificate: ownershipCertificate[0].path,
-          buildingPlan: buildingPlan[0].path,
-          locationPlan: locationPlan[0].path,
-          commercializationCertificate: commercializationCertificate[0].path,
-          authorityLetter: authorityLetter[0].path
+        ownershipCertificate: ownershipCertificate ? ownershipCertificate[0].path : '',
+        buildingPlan: buildingPlan ? buildingPlan[0].path : '',
+        locationPlan: locationPlan ? locationPlan[0].path : '',
+        authorityLetter: authorityLetter ? authorityLetter[0].path : '',
+        application: application ? application[0].path : '',
+        drawings: drawings ? drawings[0].path : '',
+        parkingAgreement: parkingAgreement ? parkingAgreement[0].path : '',
+        affidavit: affidavit ? affidavit[0].path : '',
+        ekhidmatSlip: ekhidmatSlip ? ekhidmatSlip[0].path : ''
       });
 
       // Save the form data
       await newForm.save();
 
       res.status(200).json({ message: 'Form submitted successfully' });
-  } catch (error) {
+    } catch (error) {
       console.error('Error submitting form:', error);
+      res.status(500).json({ message: 'Error submitting form', error: error.message });
+    }
+  }
+);
+
+app.post('/cnic', upload.fields([
+  { name: 'cnicFront' },
+  { name: 'cnicBack' }
+]), async (req, res) => {
+  try {
+      const { cnicFront, cnicBack } = req.files;
+
+      if (!cnicFront || !cnicFront[0]) {
+          return res.status(400).json({ message: 'CNIC front file is required' });
+      }
+      if (!cnicBack || !cnicBack[0]) {
+          return res.status(400).json({ message: 'CNIC back file is required' });
+      }
+
+      const newForm = new CNIC({
+          cnicFront: cnicFront[0].path,
+          cnicBack: cnicBack[0].path
+      });
+
+      await newForm.save();
+      res.status(200).json({ message: 'Form submitted successfully' });
+  } catch (error) {
+      console.error('Error submitting CNIC form:', error);
       res.status(500).json({ message: 'Error submitting form', error: error.message });
   }
 });
 
+
+app.post('/commercialization', upload.single('commercializationCertificate'), async (req, res) => {
+  try {
+      if (!req.file) {
+          return res.status(400).json({ message: 'Commercialization certificate file is required' });
+      }
+
+      // Create a new Commercialization entry in the database
+      const newCertificate = new Commercialization({
+          certificatePath: req.file.path
+      });
+
+      await newCertificate.save();
+      res.status(200).json({ message: 'Form submitted successfully' });
+  } catch (error) {
+      console.error('Error submitting commercialization form:', error);
+      res.status(500).json({ message: 'Error submitting form', error: error.message });
+  }
+});
+
+
+app.post(
+  '/dts',
+  upload.fields([
+    { name: 'formIs' },
+    { name: 'menuCard' },
+    { name: 'leaseAgreement' },
+    { name: 'partnershipDeed' },
+    { name: 'incorporationCertificate' },
+    { name: 'memorandum' },
+    { name: 'FormA' },
+    { name: 'Form29' }
+  ]),
+  async (req, res) => {
+    try {
+      // Extract files from the request
+      const {
+        formIs,
+        menuCard,
+        leaseAgreement,
+        partnershipDeed,
+        incorporationCertificate,
+        memorandum,
+        FormA,
+        Form29
+      } = req.files;
+
+      // Log uploaded files for debugging
+      console.log(req.files);
+
+      // Create a new DTS record in the database
+      const newForm = new DTS({
+        formIs: formIs ? formIs[0].path : '',
+        menuCard: menuCard ? menuCard[0].path : '',
+        leaseAgreement: leaseAgreement ? leaseAgreement[0].path : '',
+        partnershipDeed: partnershipDeed ? partnershipDeed[0].path : '',
+        incorporationCertificate: incorporationCertificate ? incorporationCertificate[0].path : '',
+        memorandum: memorandum ? memorandum[0].path : '',
+        FormA: FormA ? FormA[0].path : '',
+        Form29: Form29 ? Form29[0].path : ''
+      });
+
+      // Save the form data
+      await newForm.save();
+
+      res.status(200).json({ message: 'Form submitted successfully' });
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      res.status(500).json({ message: 'Error submitting form', error: error.message });
+    }
+  }
+);
 
 
 

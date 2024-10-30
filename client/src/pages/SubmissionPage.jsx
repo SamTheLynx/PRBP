@@ -22,30 +22,30 @@ const provinces = [
   'Punjab'
 ];
 
-const towns = [
+const zones = [
+  'Ravi',
+  'Shalamar',
+  'Wagha',
+  'Aziz Bhatti',
+  'Data Ganj Bakhsh',
   'Gulberg',
-  'Defence (DHA)',
-  'Model Town',
-  'Johar Town',
-  'Lahore Cantonment',
-  'Ravi Road',
-  'Shalimar Town',
-  'Bahria Town',
-  'Faisal Town',
-  'Samanabad',
-  'Wapda Town',
-  'Qurban Lines',
-  'Ittafaq Town',
-  'Chungi Amar Sadhu',
-  'Township'
+  'Samnabad',
+  'Allama Iqbal',
+  'Nishter',
+  'Cantonement'
 ];
 
-const uc = [
-  'uc1',
-  'uc1',
-  'uc1',
-  'uc1',
-  'uc1'
+const tehsil = [
+  'Lahore Cantt',
+  'Raiwind',
+  'Lahore City',
+  'Shalimar',
+  'Model Town'
+]
+
+const city = [
+  'Lahore'
+
 ]
 
 const size = [
@@ -108,7 +108,7 @@ function SubmissionPage() {
       const response = await axios.post('http://localhost:5000/submission', values);
       console.log("response: ", response.data.message);
       if (response.data.message === "Form submitted successfully") {
-        navigate('/wasa');
+        navigate('/dts');
       }
     } catch (error) {
        console.log(error);
@@ -314,17 +314,17 @@ function SubmissionPage() {
                    </Select>
                    </Form.Item>
                  </Col>
+                
 
-
-                <Col span={6}>
+                 <Col span={6}>
                 <Form.Item
-                   name={['location', 'Town']} // Using an array to group
+                   name={['location', 'City']} // Using an array to group
                    noStyle
                  >
-                  <Select placeholder="Town" className="border-gray-300 rounded-lg" name="town">
-                    {towns.map((town) => (
-                     <Option key={town} value={town}>
-                     {town}
+                  <Select placeholder="City" className="border-gray-300 rounded-lg" name="city">
+                    {city.map((city) => (
+                     <Option key={city} value={city}>
+                     {city}
                      </Option>
                     ))}
                  </Select>
@@ -333,23 +333,29 @@ function SubmissionPage() {
 
                 <Col span={6}>
                 <Form.Item
-                   name={['location', 'Street']} // Using an array to group
+                   name={['location', 'Zone']} // Using an array to group
                    noStyle
                  >
-                   <Input placeholder="Street" className="border-gray-300 rounded-lg" name="street" />
-                </Form.Item>
+                  <Select placeholder="Zone" className="border-gray-300 rounded-lg" name="zone">
+                    {zones.map((zone) => (
+                     <Option key={zone} value={zone}>
+                     {zone}
+                     </Option>
+                    ))}
+                 </Select>
+                 </Form.Item>
                 </Col>
 
 
                 <Col span={6}>
                 <Form.Item
-                   name={['location', 'UC']} // Using an array to group
+                   name={['location', 'Tehsil']} // Using an array to group
                    noStyle
                  >
-                  <Select placeholder="UC" className="border-gray-300 rounded-lg" name="uc">
-                   {uc.map((uc)=>(
-                    <Option key={uc} value={uc}>
-                       {uc}
+                  <Select placeholder="Tehsil" className="border-gray-300 rounded-lg" name="tehsil">
+                   {tehsil.map((tehsil)=>(
+                    <Option key={tehsil} value={tehsil}>
+                       {tehsil}
                     </Option>
                    ))
 
