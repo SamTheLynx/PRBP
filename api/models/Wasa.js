@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const wasaSchema = new mongoose.Schema({
+  formGId : { type: String },
   ownershipCertificate: { type: String},
   buildingPlan: { type: String  },
   locationPlan: { type: String },

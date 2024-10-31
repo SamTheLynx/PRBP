@@ -1,18 +1,29 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Form, Upload, Button, Typography, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
-const { Title } = Typography;
-
 const Commercialization = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  //retrieve formId from previous page
+  useEffect(() => {
+    if (location.state?.formId) {
+      console.log("Form ID received in commercial: ", location.state.formId);
+      // You can now use the formId for any necessary operations
+    }
+  }, [location.state]);
 
   const onFinish = async () => {
-    const values = form.getFieldsValue();
+    let values = form.getFieldsValue();
     const formData = new FormData();
+    console.log("location.state before usage: ", location.state.formId);
+    values = {formGId: location.state.formId, ...values}; //add the id of form-G as reference for fetching documents
+
+    formData.append('formGId', values.formGId); // Append formGId as a text field
 
     // Check if the user has uploaded a commercialization certificate
     const hasCertificate = values.commercializationCertificate && values.commercializationCertificate.length > 0;
@@ -34,7 +45,7 @@ const Commercialization = () => {
       }
     } else {
       // Navigate to /wasa if no certificate is uploaded
-      navigate('/documents');
+      navigate('/documents', { state: { formId: location.state.formId } });
     }
   };
 

@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const UserModel = require('./models/User.js');
 // const SubadminModel = require('./models/Subadmin.js');
 const ContactModel = require('./models/Contact.js');
+const OrganisationsModel = require('./models/Organisations.js');
 const Restaurant = require('./models/restaurantSchema.js');
 const Wasa = require('./models/Wasa.js');
 const CNIC = require ('./models/CNIC.js');
@@ -69,6 +70,7 @@ app.post(
   async (req, res) => {
     try {
       // Extract the uploaded files from the request
+      const { formGId } = req.body;
       const {
         ownershipCertificate,
         buildingPlan,
@@ -85,6 +87,7 @@ app.post(
 
       // Create a new WASA form record in the database
       const newForm = new Wasa({
+        formGId: formGId || '',
         ownershipCertificate: ownershipCertificate ? ownershipCertificate[0].path : '',
         buildingPlan: buildingPlan ? buildingPlan[0].path : '',
         locationPlan: locationPlan ? locationPlan[0].path : '',
@@ -137,13 +140,17 @@ app.post('/cnic', upload.fields([
 
 app.post('/commercialization', upload.single('commercializationCertificate'), async (req, res) => {
   try {
-      if (!req.file) {
+      const { formGId } = req.body; // Retrieve formGId from the request body
+      const { file } = req;         // Retrieve the uploaded certificate file
+
+      if (!file) {
           return res.status(400).json({ message: 'Commercialization certificate file is required' });
       }
 
-      // Create a new Commercialization entry in the database
+      // Create a new Commercialization entry with formGId and certificate path
       const newCertificate = new Commercialization({
-          certificatePath: req.file.path
+          formGId: formGId,          // Store formGId for tracking
+          certificatePath: file.path // Store the certificate file path
       });
 
       await newCertificate.save();
@@ -153,6 +160,7 @@ app.post('/commercialization', upload.single('commercializationCertificate'), as
       res.status(500).json({ message: 'Error submitting form', error: error.message });
   }
 });
+
 
 
 app.post(
@@ -170,6 +178,7 @@ app.post(
   async (req, res) => {
     try {
       // Extract files from the request
+      const { formGId } = req.body;
       const {
         formIs,
         menuCard,
@@ -186,6 +195,7 @@ app.post(
 
       // Create a new DTS record in the database
       const newForm = new DTS({
+        formGId: formGId || '',
         formIs: formIs ? formIs[0].path : '',
         menuCard: menuCard ? menuCard[0].path : '',
         leaseAgreement: leaseAgreement ? leaseAgreement[0].path : '',
@@ -210,7 +220,7 @@ app.post(
 
 app.post('/uploadProof', upload.single('file'), async (req, res) => {
   try {
-      const { bill } = req.body;
+      const { bill, formGId } = req.body;
       const { file } = req;
 
       if (!file) {
@@ -218,6 +228,7 @@ app.post('/uploadProof', upload.single('file'), async (req, res) => {
       }
 
       const newProof = new Proof({
+          formGId : formGId,
           bill: bill,
           filePath: file.path,
       });
@@ -449,7 +460,10 @@ app.post('/signup', async (req, res) => {
       const restaurant = new Restaurant(req.body);
       await restaurant.save();
       // Only send one response
-      res.status(201).json({ message: "Form submitted successfully", restaurant });
+      
+      res.status(201).json({ message: "Form submitted successfully",
+                              restaurant : restaurant,
+                              formId: restaurant._id});
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
@@ -467,16 +481,16 @@ app.post('/signup', async (req, res) => {
   });
 
   
-  app.post('/wasa', async (req, res) => {
-    try {
-      const wasaForm = new Wasa(req.body);
-      await wasaForm.save();
-      // Only send one response
-      res.status(201).json({ message: "Form submitted successfully", wasaForm });
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  });
+  // app.post('/wasa', async (req, res) => {
+  //   try {
+  //     const wasaForm = new Wasa(req.body);
+  //     await wasaForm.save();
+  //     // Only send one response
+  //     res.status(201).json({ message: "Form submitted successfully", wasaForm });
+  //   } catch (error) {
+  //     res.status(400).json({ message: error.message });
+  //   }
+  // });
 
 
   app.post('/adminLogin', async (req, res) => {
@@ -632,6 +646,55 @@ app.post('/uploadToIpfs', upload.single('file'), async (req, res) => {
 });
 
 //-----------------------------------------------------------------------------------------------------
+
+app.get('/getStatus/:id', async (req, res) => {
+  try{
+    console.log("in getStatus backend with id ", req.params.id);
+    const form = await Restaurant.findOne({_id: req.params.id});
+    if (!form) {
+      return res.status(404).json({ message: "Form not found" });
+    }
+
+    res.status(200).json({ status: form.status });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+})
+
+//setStatus
+
+// Route to get organisation details by ID
+app.get('/getOrganisationDetails/:id', async (req, res) => {
+  try {
+    const org = await OrganisationsModel.findOne({ organisationId: req.params.id });
+
+    if (!org) {
+      return res.status(404).json({ message: "Organization not found" });
+    }
+
+    res.status(200).json({ name: org.organisationName });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.get('/certificates/:cnic', async (req, res) => {
+  const { cnic } = req.params;
+
+  try {
+    // Query for forms with matching CNIC
+    const forms = await Restaurant.find({ OwnerCnic: cnic });
+
+    if (forms.length === 0) {
+      return res.status(404).json({ message: 'No forms found for this CNIC' });
+    }
+
+    res.status(200).json(forms);
+  } catch (error) {
+    console.error('Error fetching forms:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
   
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}...`);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {} from 'react';
 import { Upload, Typography, Button, message, Input, Form } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import yourImage from '../assets/nadra.png'; // Replace with the path to your image

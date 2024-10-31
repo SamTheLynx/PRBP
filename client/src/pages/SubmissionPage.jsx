@@ -3,9 +3,12 @@ import { Button, Form, Input, Typography, Select, Row, Col } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import EmployeeTable from './EmployeeTable';
+import { useSelector } from "react-redux";
+
+//use redux to get user data to store with the form
+
 
 const { Option } = Select;
-const { Title } = Typography;
 
 const startYear = 1900; // Starting year
 const endYear = new Date().getFullYear(); // Current year
@@ -93,7 +96,11 @@ const cuisines = [
 ];
 
 function SubmissionPage() {
+  const ReduxUser = useSelector((state) => state.user);
+  const [ownerCnic, setOwnerCnic] = useState(ReduxUser.cnic);
+
   const navigate = useNavigate();
+  const [formId, setFormId] = useState(null);
   //const [fileList, setFileList] = useState([]);
 
   // const beforeUpload = (file) => {
@@ -102,13 +109,17 @@ function SubmissionPage() {
   // };
 
   const onFinish = async (values) => {
-    // console.log('Form values: ', values);
+    //add cnic to the form for easy access and tracking
+    //status 0 means submission done, waiting for review from org1
+    values = {OwnerCnic: ownerCnic, status: 0, ...values};
     // console.log('File List', fileList);
     try {
       const response = await axios.post('http://localhost:5000/submission', values);
       console.log("response: ", response.data.message);
+      console.log("form id retrieved: ", response.data.formId);
       if (response.data.message === "Form submitted successfully") {
-        navigate('/dts');
+        navigate('/dts', { state: { formId: response.data.formId } });  // Pass formId using state
+        //navigate('/wasa', { state: { formId: response.data.formId } });  // Pass formId using state
       }
     } catch (error) {
        console.log(error);

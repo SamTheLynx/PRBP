@@ -68,7 +68,7 @@ const Navbar = () => {
             ) : (
               <div>
                 <Link className="no-underline log-sign-options" to="/account">
-                  <p className="p">Account</p>
+                  <p className="p">{ReduxUser.fname + " " + ReduxUser.lname}</p>
                   <FontAwesomeIcon size="2x" color="#3C4E6F" icon={faUser} />
                 </Link>
               </div>

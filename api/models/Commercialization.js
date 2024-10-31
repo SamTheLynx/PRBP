@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
 
-
 const commercializationSchema = new mongoose.Schema({
+  formGId : { type: String },
   certificatePath: {
     type: String,
-   
   },
   createdAt: {
     type: Date,

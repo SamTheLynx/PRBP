@@ -1,8 +1,12 @@
 const mongoose = require('mongoose');
-const {Schema} = mongoose;
-
 
 const restaurantSchema = new mongoose.Schema({
+  OwnerCnic:{
+    type: String,
+  },
+  status:{
+    type: Number,
+  },
   RestaurantName: {
     type: String,
   },

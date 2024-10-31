@@ -1,11 +1,19 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 
 export default function BillingPage() {
     const location = useLocation();
     const navigate = useNavigate();
+
+    //retrieve formId from previous page
+    useEffect(() => {
+        if (location.state?.formId) {
+        console.log("Form ID received in WASA: ", location.state.formId);
+        // You can now use the formId for any necessary operations
+        }
+    }, [location.state]);
 
     const ReduxUser = useSelector((state) => state.user);
     console.log("From Redux: ", ReduxUser);
@@ -76,6 +84,7 @@ export default function BillingPage() {
         const proofData = new FormData();
         proofData.append('file', proofFile);
         proofData.append('bill', selectedBill.label);
+        proofData.append('formGId', location.state.formId);
 
         try {
             const response = await axios.post('http://localhost:5000/uploadProof', proofData, {
