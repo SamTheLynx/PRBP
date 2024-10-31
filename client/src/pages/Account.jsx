@@ -103,12 +103,14 @@ export default function Account() {
                     </div>
 
                     <div>
+                    <Link to="/">
                         <button
                             className="bg-custom-blue text-white text-white px-20 py-2 rounded-md hover:bg-blue-600 transition w-full"
                             onClick={updateAccount}
                         >
                             Save Changes
                         </button>
+                    </Link>
                     </div>
                 </div>
             </div>

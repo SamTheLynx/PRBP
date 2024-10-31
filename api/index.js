@@ -8,7 +8,8 @@ const ContactModel = require('./models/Contact.js');
 const Restaurant = require('./models/restaurantSchema.js');
 const Wasa = require('./models/Wasa.js');
 const CNIC = require ('./models/CNIC.js');
-const DTS = require('./models/DTS.js')
+const DTS = require('./models/DTS.js');
+const Renewal = require('./models/Renewal.js');
 const Commercialization = require ('./models/Commercialization.js')
 const nodemailer = require("nodemailer");
 const dotenv = require('dotenv');
@@ -431,7 +432,18 @@ app.post('/signup', async (req, res) => {
     }
   });
 
+  app.post('/renewCertification', async (req, res) => {
+    try {
+      const renewal = new Renewal(req.body);
+      await renewal.save();
+      // Only send one response
+      res.status(201).json({ message: 'renewal successful', renewal });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  });
 
+  
   app.post('/wasa', async (req, res) => {
     try {
       const wasaForm = new Wasa(req.body);

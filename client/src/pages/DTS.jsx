@@ -3,7 +3,7 @@ import { Form, Upload, Button, Typography, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import formI from '../assets/Form-I.jpeg';
+import formI from '../assets/medical.jpg';
 
 const { Title, Text } = Typography;
 

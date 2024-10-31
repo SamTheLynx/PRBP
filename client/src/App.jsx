@@ -26,6 +26,7 @@ import AdminSidebar from './pages/AdminPortal/AdminSidebar.jsx';
 import WASA from './pages/WASA.jsx';
 import DTS from './pages/DTS.jsx';
 import Commercialization from './pages/Commercialization.jsx';
+import CertificationRenewal from './pages/Renewal.jsx'
 
 function App() {
   return(
@@ -38,10 +39,11 @@ function App() {
             <Route path="/signup" element={<Signup/>}/>
             <Route path="/loginOptions" element={<OptionPage/>}/>
             <Route path="/submission" element={<SubmissionPage/>}/>
+            <Route path="/renewal" element={<CertificationRenewal/>}/>
             <Route path="/cnic" element={<CNIC_Upload/>}/>
             <Route path="/dts" element={<DTS/>}/>
             <Route path="/commercialization" element={<Commercialization/>}/>
-            <Route path="/wasa" element={<WASA/>}/>
+            <Route path="/documents" element={<WASA/>}/>
             <Route path="/dts" element={<DTS/>}/>
             <Route path="/billing" element={<BillingPage/>}/>
             <Route path="/about" element={<AboutUs/>}/>

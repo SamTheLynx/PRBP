@@ -34,7 +34,7 @@ const Commercialization = () => {
       }
     } else {
       // Navigate to /wasa if no certificate is uploaded
-      navigate('/wasa');
+      navigate('/documents');
     }
   };
 
