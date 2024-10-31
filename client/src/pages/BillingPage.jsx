@@ -1,140 +1,176 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
-import { ethers } from "ethers";
 import { useSelector } from "react-redux";
-import { ComputationsAbi } from '../ContractAbis/ComputationsAbi';
-import styles from './BillingPage.module.css'; // Import the CSS module
 
-const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
-
-export default function BillingPage(){
+export default function BillingPage() {
     const location = useLocation();
     const navigate = useNavigate();
 
     const ReduxUser = useSelector((state) => state.user);
     console.log("From Redux: ", ReduxUser);
 
-    const [walletAddr, setWalletAddr] = useState('');
-    const [formId, setFormId] = useState('');
+    const [popupVisible, setPopupVisible] = useState(false);
+    const [selectedBill, setSelectedBill] = useState(null);
+    const [proofFile, setProofFile] = useState(null);
+    const [submittedProofs, setSubmittedProofs] = useState({});
+    const [notification, setNotification] = useState(""); // State for notifications
 
-    // All form details
-    const [cnic, setCnic] = useState(ReduxUser.cnic);
-    const [fname, setFname] = useState(ReduxUser.fname);
-    const [lname, setLname] = useState(ReduxUser.lname);
-    const [phone, setPhone] = useState(ReduxUser.phone);
-    const [email, setEmail] = useState(ReduxUser.email);
+    const billItems = [
+        { 
+            label: "Platform fee", amount: "500 PKR", 
+            accountName: "Platform Services", accountNumber: "1234567890", bankName: "Meezan Bank" 
+        },
+        { 
+            label: "Police Khidmat Markaz", amount: "1,000 PKR", 
+            accountName: "Police Services", accountNumber: "2345678901", bankName: "Allied Bank" 
+        },
+        { 
+            label: "DTS", amount: "40,000 PKR", 
+            accountName: "DTS Corp", accountNumber: "3456789012", bankName: "Allied Bank" 
+        },
+        { 
+            label: "LDA", amount: "10,000 PKR", 
+            accountName: "LDA Fund", accountNumber: "4567890123", bankName: "Faysal Bank" 
+        },
+        { 
+            label: "LDA (Town Planning)", amount: "10,000 PKR", 
+            accountName: "LDA Town Planning", accountNumber: "5678901234", bankName: "Al-Falah Bank" 
+        },
+        { 
+            label: "LDA (TEPA)", amount: "100,000 PKR", 
+            accountName: "LDA TEPA", accountNumber: "6789012345", bankName: "MCB Bank" 
+        },
+        { 
+            label: "LDA (EPA)", amount: "150,000 PKR", 
+            accountName: "LDA EPA", accountNumber: "7890123456", bankName: "Standard Chartered Bank" 
+        },
+        { 
+            label: "LDA (WASA)", amount: "75,000 PKR", 
+            accountName: "LDA WASA", accountNumber: "8901234567", bankName: "Habib Bank" 
+        },
+    ];
 
-    // IPFS Hash storage
-    const [ipfsHash, setIpfsHash] = useState(null);
+    const handleBillClick = (bill) => {
+        setSelectedBill(bill);
+        setPopupVisible(true);
+    };
 
-    // Receive params from form submission page
-    const { bname, baddr, city, province, document } = location.state || {};
-    const { ethereum } = window;
-    let contract;
+    const closePopup = () => {
+        setPopupVisible(false);
+        setSelectedBill(null);
+        setProofFile(null);
+        setNotification(""); // Clear notification when closing the popup
+    };
 
-    const getContractSigner = async(provider) => {
-        if(window.ethereum){
-            let signer = await ethereum.request({ method: "eth_requestAccounts" });
-            signer = signer[0];
-            
-            for (let index = 0; index < 20; index++) {
-                let prov = await provider.getSigner(index);
-                prov = await prov.getAddress();
-                if(signer.toUpperCase() === prov.toUpperCase()){
-                    return await provider.getSigner(index);
-                }
-            }
+    const handleProofFileChange = (event) => {
+        setProofFile(event.target.files[0]);
+    };
+
+    const submitProof = async () => {
+        if (!proofFile) {
+            setNotification("Please upload a proof of transfer."); // Set notification message
+            return;
         }
-    }
 
-    const addForm = async (formData) => {
-        const provider = new ethers.JsonRpcProvider("http://localhost:8545");
-        const signer = await getContractSigner(provider);
-
-        contract = new ethers.Contract(contractAddress, ComputationsAbi, signer);
-        const options = { gasLimit: 2000000, gasPrice: ethers.parseUnits("20", "gwei") };
+        const proofData = new FormData();
+        proofData.append('file', proofFile);
+        proofData.append('bill', selectedBill.label);
 
         try {
-            await contract.addForm(
-                formData.get('cnic'),
-                formData.get('fname'),
-                formData.get('lname'),
-                formData.get('phone'),
-                formData.get('email'),
-                formData.get('bname'),
-                formData.get('baddr'),
-                formData.get('city'),
-                formData.get('province'),
-                formData.get('ipfsHash'),
-                options
-            );
-            console.log("Form added successfully");
-            console.log("contract address: ", contract.target);
-            console.log("signers address: ", await signer.getAddress());
-            alert("Form added successfully");
-        } catch (e) {
-            console.error("Form cannot be added at the moment: ", e);
-            alert("Form cannot be added at the moment");
-        }
-    }
-
-    const submitForm = async () => {
-        console.log({ cnic, bname, document });
-
-        const formData = new FormData();
-        formData.append('cnic', cnic);
-        formData.append('fname', fname);
-        formData.append('lname', lname);
-        formData.append('phone', phone);
-        formData.append('email', email);
-        formData.append('bname', bname);
-        formData.append('baddr', baddr);
-        formData.append('city', city);
-        formData.append('province', province);
-        formData.append('filename', document[0].name);
-        formData.append('file', document[0].originFileObj);
-
-        console.log("Form data in billing before sending: ", formData);
-
-        try {
-            const response = await axios.post('http://localhost:5000/uploadToIpfs', formData, {
+            const response = await axios.post('http://localhost:5000/uploadProof', proofData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
+            setNotification("Proof of transfer submitted successfully!"); // Set success message
 
-            setIpfsHash(response.data.IpfsHash);
-            formData.append('ipfsHash', response.data.IpfsHash);
-            console.log("Form data after hash input: ", formData);
-
-            // Blockchain storage
-            addForm(formData);
-
-            console.log('File uploaded successfully!');
-            alert("File uploaded successfully");
-            navigate("/");
+            // Mark this bill as submitted
+            setSubmittedProofs((prev) => ({ ...prev, [selectedBill.label]: true }));
+            closePopup();
         } catch (error) {
-            console.error('Error uploading file:', error);
-            console.log('Failed to upload file.');
+            console.error("Error uploading proof:", error);
+            setNotification("Failed to submit proof of transfer."); // Set error message
         }
-    }
+    };
+
+    const submitForm = () => {
+        // Check if all proofs are submitted
+        const allSubmitted = billItems.every((item) => submittedProofs[item.label]);
+
+        if (!allSubmitted) {
+            setNotification("Please ensure all proofs are submitted before proceeding."); // Set error message
+            return;
+        }
+
+        // Navigate to the home page if all proofs are submitted
+        navigate('/');
+    };
 
     return (
-        <div className={styles.container}>
-            <div className={styles.innerContainer}>
-                <h1 className={styles.heading}>Itemized Bill</h1>
-                <div className={styles.billItem}>Platform fee: <span>500 pkr</span></div>
-                <div className={styles.billItem}>Police Khidmat Markaz: <span>1,000 pkr</span></div>
-                <div className={styles.billItem}>DTS: <span>40,000 pkr</span></div>
-                <div className={styles.billItem}>LDA: <span>10,000 pkr</span></div>
-                <div className={styles.billItem}>LDA (Town Planning): <span>10,000 pkr</span></div>
-                <div className={styles.billItem}>LDA (TEPA): <span>100,000 pkr</span></div>
-                <div className={styles.billItem}>LDA (EPA): <span>150,000 pkr</span></div>
-                <div className={styles.billItem}>LDA (WASA): <span>75,000 pkr</span></div>
-                <div className={styles.totalBill}>Your total bill is: <span>368,500 pkr</span></div>
-                <button className={styles.primaryButton} onClick={submitForm}>Submit</button>
+        <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-gray-200 to-blue-100 p-4">
+            <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
+                <h1 className="text-2xl font-bold text-custom-blue mb-6 text-center">Itemized Bill</h1>
+
+                {/* Display Notification */}
+                {notification && (
+                    <div className="mb-4 text-red-600 text-center">{notification}</div>
+                )}
+                
+                {billItems.map((item, index) => (
+                    <div 
+                        key={index} 
+                        onClick={() => handleBillClick(item)}
+                        className={`mb-2 text-lg flex justify-between border-b border-gray-300 py-2 cursor-pointer 
+                            ${submittedProofs[item.label] ? 'text-green-600' : 'hover:text-blue-600'}`}
+                    >
+                        <span>{item.label}:</span> <span>{item.amount}</span>
+                    </div>
+                ))}
+
+                <div className="text-xl font-semibold text-custom-blue mt-6 flex justify-between border-t border-gray-300 pt-4">
+                    <span>Your total bill is:</span> <span>368,500 PKR</span>
+                </div>
+                
+                <button 
+                    onClick={submitForm} 
+                    className="mt-6 w-full bg-custom-blue text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                    Submit
+                </button>
+
+                {popupVisible && selectedBill && (
+                    <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+                        <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+                            <h2 className="text-xl font-bold mb-4">Transfer Details for {selectedBill.label}</h2>
+                            <p className="mb-2"><strong>Account Name:</strong> {selectedBill.accountName}</p>
+                            <p className="mb-2"><strong>Account Number:</strong> {selectedBill.accountNumber}</p>
+                            <p className="mb-4"><strong>Bank Name:</strong> {selectedBill.bankName}</p>
+
+                            <label className="block mb-2 font-semibold">Upload Proof of Transfer:</label>
+                            <input 
+                                type="file" 
+                                onChange={handleProofFileChange} 
+                                className="mb-4"
+                                accept="image/*"
+                            />
+
+                            <button 
+                                onClick={submitProof} 
+                                className="w-full bg-custom-blue text-white py-2 rounded-lg hover:bg-blue-700 transition-colors mb-2"
+                            >
+                                Submit Proof
+                            </button>
+                            <button 
+                                onClick={closePopup} 
+                                className="w-full bg-custom-blue text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
-    )
+    );
 }

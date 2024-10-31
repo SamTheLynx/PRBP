@@ -10,6 +10,7 @@ const Wasa = require('./models/Wasa.js');
 const CNIC = require ('./models/CNIC.js');
 const DTS = require('./models/DTS.js');
 const Renewal = require('./models/Renewal.js');
+const Proof = require('./models/PaymentProof.js');
 const Commercialization = require ('./models/Commercialization.js')
 const nodemailer = require("nodemailer");
 const dotenv = require('dotenv');
@@ -206,6 +207,28 @@ app.post(
   }
 );
 
+
+app.post('/uploadProof', upload.single('file'), async (req, res) => {
+  try {
+      const { bill } = req.body;
+      const { file } = req;
+
+      if (!file) {
+          return res.status(400).json({ message: 'Proof file is required' });
+      }
+
+      const newProof = new Proof({
+          bill: bill,
+          filePath: file.path,
+      });
+
+      await newProof.save();
+      res.status(200).json({ message: 'Proof of transfer submitted successfully!' });
+  } catch (error) {
+      console.error('Error uploading proof:', error);
+      res.status(500).json({ message: 'Error uploading proof', error: error.message });
+  }
+});
 
 
 
