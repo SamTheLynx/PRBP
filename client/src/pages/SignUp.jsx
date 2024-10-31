@@ -76,7 +76,7 @@ export default function Signup() {
           <Text className="block mb-1">CNIC</Text>
           <Form.Item name='cnic' rules={[
             { required: true, message: 'Please enter your CNIC' },
-            { pattern: /^[0-9]{5}-[0-9]{7}-[0-9]$/, message: 'CNIC must be in the format 3xxxx-xxxxxxx-x' }
+            { pattern: /^\d{13}$/, message: "Enter a valid 13-digit CNIC number" }
           ]}>
             <Input className='border-gray-300 rounded-lg' placeholder='Enter your CNIC'  />
           </Form.Item>
