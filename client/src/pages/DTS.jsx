@@ -1,21 +1,32 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Upload, Button, Typography, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import formI from '../assets/medical.jpg';
 
-const { Title, Text } = Typography;
 
 const DTS = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  //retrieve formId from previous page
+  useEffect(() => {
+    if (location.state?.formId) {
+      console.log("Form ID received in WASA: ", location.state.formId);
+      // You can now use the formId for any necessary operations
+    }
+  }, [location.state]);
 
   const onFinish = async () => {
-    const values = form.getFieldsValue();
+    let values = form.getFieldsValue();
     const formData = new FormData();
+    values = {formGId: location.state.formId, ...values}; //add the id of form-G as reference for fetching documents
+    console.log('values obj in dts: ', values);
 
     // Append files to FormData
+    formData.append('formGId', values.formGId);
     [
       'formIs', 'menuCard', 'leaseAgreement', 'partnershipDeed',
       'incorporationCertificate', 'memorandum', 'FormA', 'Form29'
@@ -31,7 +42,8 @@ const DTS = () => {
       });
       if (response.data.message === "Form submitted successfully") {
         message.success("Form submitted successfully");
-        navigate('/commercialization'); 
+        console.log('location.state.formId in dts before passing to commercial: ', location.state.formId);
+        navigate('/commercialization', { state: { formId: location.state.formId } }); 
       }
     } catch (error) {
       console.error('Error submitting form:', error.response?.data?.message || error.message);

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const dtsSchema = new mongoose.Schema({
+  formGId : { type: String },
   formIs: { type: String },
   menuCard: { type: String },
   leaseAgreement: { type: String },
