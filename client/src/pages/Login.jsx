@@ -15,20 +15,27 @@ function Login() {
         console.log('Success:', values);
         try {
             const response = await axios.post('http://localhost:5000/userLogin', values);
-            console.log("response: ", response);
+            console.log('response: ',response)
             if (response.data.message === 'login successful') {
-                console.log("hi");
                 let UserBody = {
-                    fname: response.data.user?.fname,
-                    lname: response.data.user?.lname,
-                    phone: response.data.user?.phone,
-                    cnic: response.data.user?.cnic,
-                    email: response.data.user?.email
+                    fname: response.data?.fname,
+                    lname: response.data?.lname,
+                    phone: response.data?.phone,
+                    cnic: response.data?.cnic,
+                    email: response.data?.email,
+                    designation: response.data?.designation
                 };
+                console.log('userbody: ',UserBody)
                 localStorage.setItem('user', JSON.stringify(UserBody));
                 dispatch(loginUsers(UserBody));
-                navigate('/');
-            }
+                console.log('UserBody.designation: ',UserBody.designation)
+                if (UserBody.designation === 'admin') {
+                    navigate('/admin');
+                  } else if (UserBody.designation === 'subadmin') {
+                    navigate('/subadmin');
+                  } else  {
+                    navigate('/');
+                  }             }
         } catch (error) {
             console.error('There was an error!', error);
         }

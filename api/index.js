@@ -6,12 +6,8 @@ const UserModel = require('./models/User.js');
 // const SubadminModel = require('./models/Subadmin.js');
 const ContactModel = require('./models/Contact.js');
 const Restaurant = require('./models/restaurantSchema.js');
+const Staff = require("./models/Staff.js")
 const Wasa = require('./models/Wasa.js');
-const CNIC = require ('./models/CNIC.js');
-const DTS = require('./models/DTS.js');
-const Renewal = require('./models/Renewal.js');
-const Proof = require('./models/PaymentProof.js');
-const Commercialization = require ('./models/Commercialization.js')
 const nodemailer = require("nodemailer");
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes')
@@ -22,6 +18,7 @@ const axios = require('axios');
 const fs = require('fs');
 const FormData = require('form-data');
 const multer = require('multer');
+const jwt = require('jsonwebtoken');
 
 const PORT=process.env.PORT||5000
 
@@ -40,7 +37,10 @@ app.use(cors({
 mongoose.connect('mongodb://localhost:27017/PRBP', { useNewUrlParser: true, useUnifiedTopology: true }).then(() => console.log('MongoDB connected'))
 .catch(err => console.error('Failed to connect to MongoDB', err));;
 
-
+// Generate JWT Token
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.SECRET_KEY, { expiresIn: '30m' });
+};
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -53,217 +53,43 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-app.post(
-  '/wasa',
-  upload.fields([
-    { name: 'ownershipCertificate' },
-    { name: 'buildingPlan' },
-    { name: 'locationPlan' },
-    { name: 'authorityLetter' },
-    { name: 'application' },
-    { name: 'drawings' },
-    { name: 'parkingAgreement' },
-    { name: 'affidavit' },
-    { name: 'ekhidmatSlip' }
-  ]),
-  async (req, res) => {
-    try {
+app.post('/wasa', upload.fields([
+  { name: 'ownershipCertificate' },
+  { name: 'buildingPlan' },
+  { name: 'locationPlan' },
+  { name: 'commercializationCertificate' },
+  { name: 'authorityLetter' }
+]), async (req, res) => {
+  try {
       // Extract the uploaded files from the request
-      const {
-        ownershipCertificate,
-        buildingPlan,
-        locationPlan,
-        authorityLetter,
-        application,
-        drawings,
-        parkingAgreement,
-        affidavit,
-        ekhidmatSlip
-      } = req.files;
+      const { ownershipCertificate, buildingPlan, locationPlan, commercializationCertificate, authorityLetter } = req.files;
 
-      console.log(req.files); // Log files for debugging
+      console.log(req.files);
 
       // Create a new WASA form record in the database
       const newForm = new Wasa({
-        ownershipCertificate: ownershipCertificate ? ownershipCertificate[0].path : '',
-        buildingPlan: buildingPlan ? buildingPlan[0].path : '',
-        locationPlan: locationPlan ? locationPlan[0].path : '',
-        authorityLetter: authorityLetter ? authorityLetter[0].path : '',
-        application: application ? application[0].path : '',
-        drawings: drawings ? drawings[0].path : '',
-        parkingAgreement: parkingAgreement ? parkingAgreement[0].path : '',
-        affidavit: affidavit ? affidavit[0].path : '',
-        ekhidmatSlip: ekhidmatSlip ? ekhidmatSlip[0].path : ''
+          ownershipCertificate: ownershipCertificate[0].path,
+          buildingPlan: buildingPlan[0].path,
+          locationPlan: locationPlan[0].path,
+          commercializationCertificate: commercializationCertificate[0].path,
+          authorityLetter: authorityLetter[0].path
       });
 
       // Save the form data
       await newForm.save();
 
       res.status(200).json({ message: 'Form submitted successfully' });
-    } catch (error) {
+  } catch (error) {
       console.error('Error submitting form:', error);
       res.status(500).json({ message: 'Error submitting form', error: error.message });
-    }
-  }
-);
-
-app.post('/cnic', upload.fields([
-  { name: 'cnicFront' },
-  { name: 'cnicBack' }
-]), async (req, res) => {
-  try {
-      const { cnicFront, cnicBack } = req.files;
-
-      if (!cnicFront || !cnicFront[0]) {
-          return res.status(400).json({ message: 'CNIC front file is required' });
-      }
-      if (!cnicBack || !cnicBack[0]) {
-          return res.status(400).json({ message: 'CNIC back file is required' });
-      }
-
-      const newForm = new CNIC({
-          cnicFront: cnicFront[0].path,
-          cnicBack: cnicBack[0].path
-      });
-
-      await newForm.save();
-      res.status(200).json({ message: 'Form submitted successfully' });
-  } catch (error) {
-      console.error('Error submitting CNIC form:', error);
-      res.status(500).json({ message: 'Error submitting form', error: error.message });
   }
 });
-
-
-app.post('/commercialization', upload.single('commercializationCertificate'), async (req, res) => {
-  try {
-      if (!req.file) {
-          return res.status(400).json({ message: 'Commercialization certificate file is required' });
-      }
-
-      // Create a new Commercialization entry in the database
-      const newCertificate = new Commercialization({
-          certificatePath: req.file.path
-      });
-
-      await newCertificate.save();
-      res.status(200).json({ message: 'Form submitted successfully' });
-  } catch (error) {
-      console.error('Error submitting commercialization form:', error);
-      res.status(500).json({ message: 'Error submitting form', error: error.message });
-  }
-});
-
-
-app.post(
-  '/dts',
-  upload.fields([
-    { name: 'formIs' },
-    { name: 'menuCard' },
-    { name: 'leaseAgreement' },
-    { name: 'partnershipDeed' },
-    { name: 'incorporationCertificate' },
-    { name: 'memorandum' },
-    { name: 'FormA' },
-    { name: 'Form29' }
-  ]),
-  async (req, res) => {
-    try {
-      // Extract files from the request
-      const {
-        formIs,
-        menuCard,
-        leaseAgreement,
-        partnershipDeed,
-        incorporationCertificate,
-        memorandum,
-        FormA,
-        Form29
-      } = req.files;
-
-      // Log uploaded files for debugging
-      console.log(req.files);
-
-      // Create a new DTS record in the database
-      const newForm = new DTS({
-        formIs: formIs ? formIs[0].path : '',
-        menuCard: menuCard ? menuCard[0].path : '',
-        leaseAgreement: leaseAgreement ? leaseAgreement[0].path : '',
-        partnershipDeed: partnershipDeed ? partnershipDeed[0].path : '',
-        incorporationCertificate: incorporationCertificate ? incorporationCertificate[0].path : '',
-        memorandum: memorandum ? memorandum[0].path : '',
-        FormA: FormA ? FormA[0].path : '',
-        Form29: Form29 ? Form29[0].path : ''
-      });
-
-      // Save the form data
-      await newForm.save();
-
-      res.status(200).json({ message: 'Form submitted successfully' });
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      res.status(500).json({ message: 'Error submitting form', error: error.message });
-    }
-  }
-);
-
-
-app.post('/uploadProof', upload.single('file'), async (req, res) => {
-  try {
-      const { bill } = req.body;
-      const { file } = req;
-
-      if (!file) {
-          return res.status(400).json({ message: 'Proof file is required' });
-      }
-
-      const newProof = new Proof({
-          bill: bill,
-          filePath: file.path,
-      });
-
-      await newProof.save();
-      res.status(200).json({ message: 'Proof of transfer submitted successfully!' });
-  } catch (error) {
-      console.error('Error uploading proof:', error);
-      res.status(500).json({ message: 'Error uploading proof', error: error.message });
-  }
-});
-
-
-
-
 
 
 app.get('/test', (req,res)=>{
     res.json('test ok')
 })
 
-// app.get("/api/subadmins", async (req, res) => {
-//   try {
-//     const subAdmins = await SubadminModel.find();
-//     res.json(subAdmins);
-//   } catch (error) {
-//     console.error("Error fetching SubAdmins:", error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// });
-
-// app.delete("/api/subadmins/:id", async (req, res) => {
-//   try {
-//     const subAdminId = req.params.id;
-//     const deletedSubAdmin = await SubadminModel.findByIdAndDelete(subAdminId);
-//     if (!deletedSubAdmin) {
-//       return res.status(404).json({ message: "SubAdmin not found" });
-//     }
-//     res.status(200).json({ message: "SubAdmin deleted successfully" });
-//   } catch (error) {
-//     console.error("Error deleting SubAdmin:", error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// });
-
-// Endpoint to send rejection email
 app.post('/send-rejection-email', async (req, res) => {
   const { email, reason } = req.body; //add org name
   console.log(email)
@@ -342,19 +168,20 @@ app.post('/signup', async (req, res) => {
     console.log("Received data:", req.body);
     try {
       // Check if the email is already registered
-      const existingUser = await UserModel.findOne({ email });
+      const existingUser = await Staff.findOne({ email });
       if (existingUser) {
         return res.status(400).send('Email already registered');
       }
   
      
-      const newUser = new UserModel({
+      const newUser = new Staff({
         cnic : cnic,
         fname: firstName,
         lname: lastName,
         phone: phoneNumber,
         email: email,
         password: password,
+        designation:'businessOwner'
       });
   
       await newUser.save();
@@ -365,85 +192,122 @@ app.post('/signup', async (req, res) => {
       //res.status(500).send('Error creating user');
     }
   });
+// Create Subadmin
+app.post('/subadmin-signup', async (req, res) => {
+  console.log('createSubadmin called from backend ')
+  const { fname, lname, email, password, cnic, phone, organisation } = req.body;
 
-//   app.post('/subadminSignup', async (req, res) => {
-//     const { firstName, lastName, email, password, number, cnic, organization,role} = req.body;
-//     console.log("Received data:", organization);
-//     console.log("req.body: ", req.body)
-//     try {
-//       // Check if the email is already registered
-//       const existingUser = await SubadminModel.findOne({ email });
-//       if (existingUser) {
-//         return res.status(400).send('Email already registered');
-//       }
-  
-//       //Create a new admin user
-//       const newUser = new SubadminModel({
-//         cnic : cnic,
-//         fname: firstName,
-//         lname: lastName,
-//         phone: number,
-//         email: email,
-//         password: password,
-//         organisation: organization,
-//         role:role,
-//       });
-  
-//       await newUser.save();
-//       console.log("org of new subadmin: ", newUser.cnic);
-//       //res.status(201).send('User created successfully');
-//       res.json({message: "User created successfully"});
-//     } catch (err) {
-//       console.error("Error creating user", err);
-//       //res.status(500).send('Error creating user');
-//     }
-//   });
+  // Check if the subadmin already exists
+  const subadminExists = await Staff.findOne({ email });
+  if (subadminExists) {
+    return res.status(400).json({ message: 'Subadmin already exists' });
+  }
 
-//   app.post('/subadminLogin', async (req, res) => {
-//     const { email, password } = req.body;
+  // Create new subadmin
+  const subadmin = await Staff.create({
+    fname,
+    lname,
+    email,
+    password,
+    cnic,
+    phone,
+    organisation, // Specific to subadmins
+    designation: 'subadmin',
+    roles: ['update', 'accept', 'reject'],
+  });
 
-//     try {
-//         const subadmin = await SubadminModel.findOne({ email, password });
-//         if (!subadmin) {
-//             return res.status(401).send('Invalid credentials');
-//         }
-//         res.json({message: 'login successful', subadmin: subadmin});
-//     } catch (err) {
-//         console.error("Error finding subadmin", err);
-//         res.status(500).send('Error finding subadmin');
-//     }
-//   });
+  if (subadmin) {
+    res.status(201).json({
+      _id: subadmin._id,
+      fname: subadmin.fname,
+      lname: subadmin.lname,
+      email: subadmin.email,
+      designation: subadmin.designation,
+      organisation:subadmin.organisation,
+      roles: subadmin.roles,
+    });
+  } else {
+    res.status(400).json({ message: 'Invalid subadmin data' });
+  }
+});
+app.get('/getSubadminsList', async (req, res) => {
+  try {
+    const subadmins = await Staff.find({ designation: 'subadmin' });
 
-//   app.post('/adminLogin', async (req, res) => {
-//     const { email, password } = req.body;
-//     if(email==="ayesha@gmail.com" && password==="123"){
-//         res.json({message: "login successful"});
-//     }
-//     else{
-//         res.json({message: "login unsuccessful"});
-//     }
-// });
-      //Create a new admin user
-  //     const newUser = new SubadminModel({
-  //       cnic : cnic,
-  //       fname: firstName,
-  //       lname: lastName,
-  //       phone: number,
-  //       email: email,
-  //       password: password,
-  //       role: role
-  //     });
-  
-  //     await newUser.save();
-  //     console.log("org of new subadmin: ", newUser.cnic);
-  //     //res.status(201).send('User created successfully');
-  //     res.json({message: "User created successfully"});
-  //   } catch (err) {
-  //     console.error("Error creating user", err);
-  //     //res.status(500).send('Error creating user');
-  //   }
-  // });
+    if (subadmins.length === 0) {
+      return res.status(404).json({ message: 'No subadmins found' });
+    }
+    res.status(200).json(subadmins);
+  } catch (error) {
+    console.error('Error retrieving subadmins:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+app.delete('/subadmin/:id', async (req, res) => {
+  try {
+      const subAdminId = req.params.id;
+      console.log('api called to delete su-admin:',subAdminId)
+      // Find and delete the sub-admin by ID
+      const deletedSubAdmin = await Staff.findByIdAndDelete(subAdminId);
 
+      if (!deletedSubAdmin) {
+          return res.status(404).json({ message: 'Sub-admin not found' });
+      }
+
+      res.status(200).json({ message: 'Sub-admin deleted successfully' });
+  } catch (error) {
+      console.error('Error deleting sub-admin:', error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+});
+app.put('/updateSubAdmin/:id', async (req, res) => {
+  try {
+      const subAdminId = req.params.id;
+      const updates = req.body;
+      const updatedSubAdmin = await Staff.findByIdAndUpdate(subAdminId, updates, { new: true });
+      if (!updatedSubAdmin) {
+          return res.status(404).json({ message: 'Sub-admin not found' });
+      }
+      res.status(200).json({ message: 'Sub-admin updated successfully', updatedSubAdmin });
+  } catch (error) {
+      console.error('Error updating sub-admin:', error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+app.post ('/admin-signup' ,async (req, res) => {
+  const { cnic, fname, lname, email, password, phone } = req.body;
+
+  // Check if the user already exists
+  const adminExists = await Staff.findOne({ email });
+  if (adminExists) {
+    return res.status(400).json({ message: 'Admin already exists' });
+  }
+  // Create new admin with default admin roles
+  const admin = await Staff.create({
+    fname,
+    lname,
+    email,
+    password,
+    cnic,
+    phone,
+    designation: 'admin',
+    roles: ['create', 'update', 'delete'],
+  });
+
+  if (admin) {
+    res.status(201).json({
+      _id: admin._id,
+      fname: admin.fname,
+      lname: admin.lname,
+      email: admin.email,
+      designation: admin.designation,
+      token: generateToken(admin._id),
+    });
+  } else {
+    res.status(400).json({ message: 'Invalid admin data' });
+  }
+});
   app.post('/submission', async (req, res) => {
     try {
       const restaurant = new Restaurant(req.body);
@@ -455,18 +319,7 @@ app.post('/signup', async (req, res) => {
     }
   });
 
-  app.post('/renewCertification', async (req, res) => {
-    try {
-      const renewal = new Renewal(req.body);
-      await renewal.save();
-      // Only send one response
-      res.status(201).json({ message: 'renewal successful', renewal });
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  });
 
-  
   app.post('/wasa', async (req, res) => {
     try {
       const wasaForm = new Wasa(req.body);
@@ -478,30 +331,50 @@ app.post('/signup', async (req, res) => {
     }
   });
 
-
-  app.post('/adminLogin', async (req, res) => {
-    const { email, password } = req.body;
-    if(email==="ayesha@gmail.com" && password==="123"){
-        res.json({message: "login successful"});
-    }
-    else{
-        res.json({message: "login unsuccessful"});
-    }
-});
+//   app.post('/adminLogin', async (req, res) => {
+//     const { email, password } = req.body;
+//     if(email==="ayesha@gmail.com" && password==="123"){
+//         res.json({message: "login successful"});
+//     }
+//     else{
+//         res.json({message: "login unsuccessful"});
+//     }
+// });
   
-  app.post('/userLogin', async (req, res) => {
-    const { email, password } = req.body;
+//   app.post('/userLogin', async (req, res) => {
+//     const { email, password } = req.body;
 
-    try {
-        const user = await UserModel.findOne({ email, password });
-        if (!user) {
-            return res.status(401).send('Invalid credentials');
-        }
-        res.json({message: 'login successful', user: user});
-    } catch (err) {
-        console.error("Error finding user", err);
-        res.status(500).send('Error finding user');
-    }
+//     try {
+//         const user = await UserModel.findOne({ email, password });
+//         if (!user) {
+//             return res.status(401).send('Invalid credentials');
+//         }
+//         res.json({message: 'login successful', user: user});
+//     } catch (err) {
+//         console.error("Error finding user", err);
+//         res.status(500).send('Error finding user');
+//     }
+// });
+
+// Admin and sud admin Login
+
+app.post('/userLogin', async (req, res) => {
+  const { email, password } = req.body;
+  const user = await Staff.findOne({ email});
+  if (user && (await user.matchPassword(password))) {
+    res.json({
+      _id: user._id,
+      fname: user.fname,
+      lname: user.lname,
+      email: user.email,
+      designation: user.designation,
+      token: generateToken(user._id),
+      message:'login successful',  // Add success message here
+
+    });
+  } else {
+    res.status(401).json({ message: 'Invalid email or password' });
+  }
 });
 
 app.post("/resetPassword", async (req, res) => {

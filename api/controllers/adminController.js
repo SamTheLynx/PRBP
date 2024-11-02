@@ -9,7 +9,7 @@ const generateToken = (id) => {
 };
 
 // Admin Signup
-const adminSignup = async (req, res) => {
+const Signup = async (req, res) => {
   const { cnic, fname, lname, email, password, phone } = req.body;
 
   // Check if the user already exists
@@ -43,21 +43,21 @@ const adminSignup = async (req, res) => {
   }
 };
 
-// Admin Login
-const adminLogin = async (req, res) => {
+// Admin and sud admin Login
+const Login = async (req, res) => {
   const { email, password } = req.body;
 
-  // Find admin by email
-  const admin = await Staff.findOne({ email, designation: 'admin' });
+  // Find admin/subadmin by email
+  const user = await Staff.findOne({ email});
 
-  if (admin && (await admin.matchPassword(password))) {
+  if (user && (await user.matchPassword(password))) {
     res.json({
-      _id: admin._id,
-      fname: admin.fname,
-      lname: admin.lname,
-      email: admin.email,
-      designation: admin.designation,
-      token: generateToken(admin._id),
+      _id: user._id,
+      fname: user.fname,
+      lname: user.lname,
+      email: user.email,
+      designation: user.designation,
+      token: generateToken(user._id),
     });
   } else {
     res.status(401).json({ message: 'Invalid email or password' });
@@ -98,4 +98,4 @@ const updateAdminProfile = async (req, res) => {
   }
 };
 
-module.exports = { adminSignup, adminLogin,updateAdminProfile };
+module.exports = { Signup, Login,updateAdminProfile };

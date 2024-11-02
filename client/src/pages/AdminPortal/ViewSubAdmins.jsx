@@ -7,7 +7,7 @@ function ViewSubAdmins() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/subadmins")
+      .get("http://localhost:5000/getSubadminsList")
       .then((response) => {
         setSubAdmins(response.data);
       })
@@ -17,9 +17,11 @@ function ViewSubAdmins() {
   }, []);
 
   const handleDelete = (subAdminId) => {
+    console.log('handleDelete called')
     axios
-      .delete(`http://localhost:5000/api/subadmins/${subAdminId}`)
+      .delete(`http://localhost:5000/subadmin/${subAdminId}`)
       .then((response) => {
+        console.log('response handleDelete called')
         setSubAdmins(subAdmins.filter((subAdmin) => subAdmin._id !== subAdminId));
       })
       .catch((error) => {
@@ -29,30 +31,39 @@ function ViewSubAdmins() {
 
 
   return (
-    <div>
-      <h1 className="viewSubAdmin-h1">SubAdmin List</h1>
-      <ul>
-        {subAdmins.map((subAdmin, index) => (
-          <li className="viewSubAdmin-li" key={subAdmin._id}>
-            <strong></strong> {index + 1}
-            <br />
-            <strong>Name:</strong> {subAdmin.fname} {subAdmin.lname}
-            <br />
-            <strong>Email:</strong> {subAdmin.email}
-            <br />
-            <strong>CNIC:</strong> {subAdmin.cnic}
-            <br />
+<div className="subAdmin-main">
+  <h1 className="viewSubAdmin-h1">SubAdmin List</h1>
+  <table className="subAdmin-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>CNIC</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {subAdmins.map((subAdmin, index) => (
+        <tr key={subAdmin._id}>
+          <td>{index + 1}</td>
+          <td>{subAdmin.fname} {subAdmin.lname}</td>
+          <td>{subAdmin.email}</td>
+          <td>{subAdmin.cnic}</td>
+          <td>
             <button
               onClick={() => handleDelete(subAdmin._id)}
               className="delete-button"
             >
               Delete Sub-Admin
             </button>
-            <br />
-          </li>
-        ))}
-      </ul>
-    </div>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
   );
 }
 
