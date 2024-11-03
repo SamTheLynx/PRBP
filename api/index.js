@@ -457,14 +457,18 @@ app.post('/signup', async (req, res) => {
 
   app.post('/renewCertification', async (req, res) => {
     try {
-      const renewal = new Renewal(req.body);
-      await renewal.save();
-      // Only send one response
-      res.status(201).json({ message: 'renewal successful', renewal });
+        const renewal = new Renewal(req.body);
+        await renewal.save();
+        res.status(201).json({ message: 'renewal successful', renewal });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+        // Check for duplicate key error specifically on 'certificationNumber'
+        if (error.code === 11000 && error.keyPattern && error.keyPattern.certificationNumber) {
+            return res.status(400).json({ message: 'Certificate already sent for renewal!' });
+        }
+        console.error("Unexpected error:", error);  // Log unexpected errors for troubleshooting
+        res.status(400).json({ message: 'An error occurred. Please try again later.' });
     }
-  });
+});
 
   
   app.post('/wasa', async (req, res) => {
