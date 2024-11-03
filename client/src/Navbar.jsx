@@ -7,7 +7,7 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutSubadmins } from "./store/slices/SubAdminSlice";
 import { logoutAdmins } from "./store/slices/AdminSlice";
-
+import { logoutUsers } from "./store/slices/UserSlice";
 const Navbar = () => {
   const ReduxUser=useSelector((state)=>{
     return state.user;
@@ -24,17 +24,25 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // const logout = async () => {
+  //   if(ReduxAdmin.loggedIn){
+  //     dispatch(logoutAdmins());
+  //     localStorage.removeItem('admin');;
+  //   }
+  //   else if(ReduxSubadmin.loggedIn){
+  //     dispatch(logoutSubadmins());
+  //     localStorage.removeItem('subadmin');
+  //   }
+  //   //localStorage.removeItem('state');
+  //   navigate('/');
+  // };
+// Logout function
   const logout = async () => {
-    if(ReduxAdmin.loggedIn){
-      dispatch(logoutAdmins());
-      localStorage.removeItem('admin');;
-    }
-    else if(ReduxSubadmin.loggedIn){
-      dispatch(logoutSubadmins());
-      localStorage.removeItem('subadmin');
-    }
-    //localStorage.removeItem('state');
-    navigate('/');
+  localStorage.removeItem('user');
+  localStorage.removeItem('state');
+  dispatch(logoutUsers());
+  navigate('/'); 
+  window.location.reload();
   };
 
   return (
@@ -51,7 +59,7 @@ const Navbar = () => {
         <div className="second-div">
         {!ReduxUser.loggedIn && !ReduxAdmin.loggedIn && !ReduxSubadmin.loggedIn ? (
           <div className="log-sign-options">
-            <Link className="no-underline" to="/loginOptions">
+            <Link className="no-underline" to="/user-login">
               <p className="p">Login</p>
             </Link>
             <div className="VerticalLine"></div>
@@ -68,7 +76,7 @@ const Navbar = () => {
             ) : (
               <div>
                 <Link className="no-underline log-sign-options" to="/account">
-                  <p className="p">Account</p>
+                  <p className="p">{ReduxUser.fname + " " + ReduxUser.lname}</p>
                   <FontAwesomeIcon size="2x" color="#3C4E6F" icon={faUser} />
                 </Link>
               </div>

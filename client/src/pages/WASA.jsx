@@ -1,16 +1,23 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Form, Upload, Input, Button, Typography, message } from 'antd';
+import { Form, Upload, Input, Button, message } from 'antd';
 import { UploadOutlined, DownOutlined, UpOutlined } from '@ant-design/icons';
-
-const { Title } = Typography;
 
 const WASA = () => {
   const [form] = Form.useForm();
   const [isUpperFieldsComplete, setIsUpperFieldsComplete] = useState(false);
   const [showAdditionalFields, setShowAdditionalFields] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  //retrieve formId from previous page
+  useEffect(() => {
+    if (location.state?.formId) {
+      console.log("Form ID received in WASA: ", location.state.formId);
+      // You can now use the formId for any necessary operations
+    }
+  }, [location.state]);
 
   const requiredFields = [
     'ownershipCertificate', 'buildingPlan', 
@@ -29,10 +36,12 @@ const WASA = () => {
   };
 
   const onFinish = async () => {
-    const values = form.getFieldsValue();
+    let values = form.getFieldsValue();
     const formData = new FormData();
-
+    values = {formGId: location.state.formId, ...values}; //add the id of form-G as reference for fetching documents
+    
     // Append files to FormData
+    formData.append('formGId', values.formGId);
     [
       'ownershipCertificate', 'buildingPlan', 
       'locationPlan', 'authorityLetter', 'application', 

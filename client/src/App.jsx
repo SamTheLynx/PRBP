@@ -3,13 +3,12 @@ import Layout from './Layout';
 import Home from './pages/Home/Home'
 import Login from './pages/Login'
 import Signup from './pages/SignUp'
-import OptionPage from './pages/option'
+// import OptionPage from './pages/option'
 import SubmissionPage from './pages/SubmissionPage'
 import BillingPage from './pages/BillingPage'
 import AboutUs from "./pages/AboutUs/AboutUs"
 import Contact from './pages/contact'
-import AdminLogin from './pages/AdminLogin'
-import SubAdminLogin from './pages/SubAdminLogin'
+// import AdminLogin from './pages/AdminLogin'
 import Reset from './pages/Reset'
 import Controller from './pages/Controller';
 import SubAdminSignup from './pages/SubAdminSignup'
@@ -27,6 +26,8 @@ import WASA from './pages/WASA.jsx';
 import DTS from './pages/DTS.jsx';
 import Commercialization from './pages/Commercialization.jsx';
 import CertificationRenewal from './pages/Renewal.jsx'
+import AdminSignup from './pages/AdminSignup.jsx';
+import ManageSubAdminAccount from './pages/AdminPortal/ManageSubAdminAccount.jsx';
 
 function App() {
   return(
@@ -37,7 +38,7 @@ function App() {
             <Route index element={<Home/>}/>
             <Route path="/user-login" element={<Login/>}/>
             <Route path="/signup" element={<Signup/>}/>
-            <Route path="/loginOptions" element={<OptionPage/>}/>
+            {/* <Route path="/loginOptions" element={<OptionPage/>}/> */}
             <Route path="/submission" element={<SubmissionPage/>}/>
             <Route path="/renewal" element={<CertificationRenewal/>}/>
             <Route path="/cnic" element={<CNIC_Upload/>}/>
@@ -48,8 +49,8 @@ function App() {
             <Route path="/billing" element={<BillingPage/>}/>
             <Route path="/about" element={<AboutUs/>}/>
             <Route path="/contact" element={<Contact/>}/>
-            <Route path="/admin-login" element={<AdminLogin/>}/>
-            <Route path="/subadmin-login" element={<SubAdminLogin/>}/>
+            <Route path="/admin-signup" element={<AdminSignup/>}/>
+            {/* <Route path="/admin-login" element={<AdminLogin/>}/> */}
             <Route path="/reset" element={<Reset/>}/>
             <Route path="/controller" element={<Controller/>}/>
             <Route path="/subadmin-signup" element={<SubAdminSignup/>}/>
@@ -60,6 +61,7 @@ function App() {
             <Route path="/procedure" element={<Procedure />} />
             <Route path="/userCertificates" element={<UserCertificateList />} />
             <Route path="/viewSubAdmins" element={<ViewSubAdmins />} />
+            <Route path='/ManageSubAdminAccount' element = {<ManageSubAdminAccount/>}/>
             <Route path="/ownershipTransfer" element={<OwnershipTransfer />} />
             <Route path='/adminSidebar' element={<AdminSidebar/>}/>
             {/* <Route path='./statistic' element={<Statistic/>}/> */}

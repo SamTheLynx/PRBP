@@ -18,10 +18,6 @@ function Sidebar() {
         <p>(Role)</p>
       </div>
       <nav className="nav-links">
-        <button onClick={() => handleNavigation('/dashboard')} className="nav-button">
-          <FontAwesomeIcon icon={faTachometerAlt} />
-          <span>Dashboard</span>
-        </button>
         <button onClick={() => handleNavigation('/viewSubAdmins')} className="nav-button">
           <FontAwesomeIcon icon={faList} />
           <span>View Sub-Admin Lists</span>
@@ -30,7 +26,7 @@ function Sidebar() {
           <FontAwesomeIcon icon={faUserPlus} />
           <span>Create Sub-Admin</span>
         </button>
-        <button onClick={() => handleNavigation('/deleteSubAdmin')} className="nav-button">
+        <button onClick={() => handleNavigation('/viewSubAdmins')} className="nav-button">
           <FontAwesomeIcon icon={faUserTimes} />
           <span>Delete Sub-Admin</span>
         </button>
@@ -38,9 +34,9 @@ function Sidebar() {
           <FontAwesomeIcon icon={faChartBar} />
           <span>Applications</span>
         </button>
-        <button onClick={() => handleNavigation('/statistic')} className="nav-button">
+        <button onClick={() => handleNavigation('/ManageSubAdminAccount')} className="nav-button">
           <FontAwesomeIcon icon={faChartBar} />
-          <span>Stats</span>
+          <span>Manage Accounts</span>
         </button>
       </nav>
     </div>

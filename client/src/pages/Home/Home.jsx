@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"; // Only import Link here
 import { useSelector } from "react-redux"; // Import useSelector from react-redux
 import img1 from "../../assets/Home-img1.png";
 import img2 from "../../assets/Home2.jpg";
+import AdminLogin from "../AdminLogin";
 
 function Home() {
   const ReduxUser = useSelector((state) => state.user);

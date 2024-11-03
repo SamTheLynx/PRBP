@@ -3,6 +3,7 @@ const Staff = require('../models/Staff');
 
 // Create Subadmin
 const createSubadmin = async (req, res) => {
+  console.log('createSubadmin called from backend ')
   const { fname, lname, email, password, cnic, phone, organisation } = req.body;
 
   // Check if the subadmin already exists

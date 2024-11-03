@@ -59,8 +59,9 @@ function ManageSubAdmin() {
   };
 
   return (
-    <div className="main-container">
-      <Sidebar />
+     <div className="main-container">
+      <div> <Sidebar /> </div>
+      <div>
       <div className="content">
         <div className="manage-subadmin-container">
           <div className="cards-container">
@@ -95,16 +96,6 @@ function ManageSubAdmin() {
               </button>
             </div>
             <div className="card">
-              <h3>Pending Applications</h3>
-              <p>60</p>
-              <button
-                onClick={() => handleViewCardDetails("subAdmin")}
-                className="card-view-button"
-              >
-                View
-              </button>
-            </div>
-            <div className="card">
               <h3>Delayed Applications</h3>
               <p>15</p>
               <button
@@ -115,13 +106,9 @@ function ManageSubAdmin() {
               </button>
             </div>
           </div>
-          <div className="pie-chart">
-          <div style={{ width: "40%", margin: "auto" }}>
-            <h2>Application Statistics</h2>
-            <Pie data={data} options={options} />
-          </div>
-          </div>
+          
         </div>
+      </div>
       </div>
     </div>
   );

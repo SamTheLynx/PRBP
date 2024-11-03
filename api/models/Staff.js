@@ -14,7 +14,6 @@ const StaffSchema = new mongoose.Schema({
   roles: [{ type: String }], // e.g., ['create', 'update', 'delete', 'accept', 'reject']
 });
 
-// Password hashing before saving
 StaffSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 10);

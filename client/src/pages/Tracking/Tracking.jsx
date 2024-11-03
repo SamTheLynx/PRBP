@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import "./Tracking.css"; // Import the CSS file
 import { useSelector } from "react-redux";
-import { ComputationsAbi } from "../../ContractAbis/ComputationsAbi";
-import { ethers } from "ethers";
+//import { ComputationsAbi } from "../../ContractAbis/ComputationsAbi";
+//import { ethers } from "ethers";
 import PDFSrc from "../../assets/DTS.jpg";
+import axios from 'axios';
 
-const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
+//const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
 const TrackFormStatus = () => {
-  const ReduxUser = useSelector((state) => state.user);
+  const ReduxUser = useSelector((state) => state.user); //use this to ensure owner is only tracking his own forms
 
   const [formId, setFormId] = useState("");
   const [trackingResult, setTrackingResult] = useState("");
@@ -64,39 +65,60 @@ const TrackFormStatus = () => {
     "Fully Approved!",
   ];
 
-  const organizationIndex = [
-    "Police Clearance",
-    "DTS",
-    "LDA (Town Planning)",
-    "LDA (TEPA)",
-    "LDA (EPA)",
-    "LDA (WASA)",
-    "Approved",
-    "Approved",
-  ];
+  // const organizationIndex = [
+  //   "Police Clearance",
+  //   "DTS",
+  //   "LDA (Town Planning)",
+  //   "LDA (TEPA)",
+  //   "LDA (EPA)",
+  //   "LDA (WASA)",
+  //   "Approved",
+  //   "Approved",
+  // ];
 
-  const trackFormStatus = (id) => {
-    const form = forms[id - 1];
+  // const trackFormStatus = (id) => {
+  //   const form = forms[id - 1];
 
-    if (form) {
-      const organization = form["currentStage"] || "Unknown";
+  //   if (form) {
+  //     const organization = form["currentStage"] || "Unknown";
+  //     setTrackingResult(
+  //       `Form ID: ${id}, Status: ${form["status"]}, Current Organization: ${organization}`
+  //     );
+  //     setIsFormFound(true);
+  //     const index = organizationIndex.indexOf(organization);
+  //     if (index < 6) {
+  //       setCurrentStageIndex(index);
+  //     } else {
+  //       setCurrentStageIndex(7);
+  //     }
+  //     setIsTracking(true); // Show tracking component
+  //   } else {
+  //     setTrackingResult(`Form ID: ${id} not found.`);
+  //     setIsFormFound(false);
+  //     setCurrentStageIndex(null);
+  //   }
+  // };
+
+  const trackFormStatus = async(id) => {
+    //get status from form id
+    const status = await axios.get(`http://localhost:5000/getStatus/${id}`);
+    console.log("status retrieved for tracking: ", status.data.status);
+    if(status){
+      let orgId = status.data.status;
+      //get organisation name
+      const org = await axios.get(`http://localhost:5000/getOrganisationDetails/${orgId}`)
       setTrackingResult(
-        `Form ID: ${id}, Status: ${form["status"]}, Current Organization: ${organization}`
+        `Form ID: ${id}, Status: ${orgId}, Current Organization: ${org.data.name}`
       );
       setIsFormFound(true);
-      const index = organizationIndex.indexOf(organization);
-      if (index < 6) {
-        setCurrentStageIndex(index);
-      } else {
-        setCurrentStageIndex(7);
-      }
+      setCurrentStageIndex(orgId);
       setIsTracking(true); // Show tracking component
     } else {
       setTrackingResult(`Form ID: ${id} not found.`);
       setIsFormFound(false);
       setCurrentStageIndex(null);
-    }
-  };
+    } 
+  }
 
   const handleInputChange = (e) => {
     setFormId(e.target.value);
@@ -171,9 +193,7 @@ const TrackingStatusComponent = ({
   onBackButtonClick, // Receive back button handler
 }) => {
   let statusMessage = "";
-  if (trackingResult.includes("pending")) {
-    statusMessage = "Your application is currently under process. Please try again later.";
-  } else if (trackingResult.includes("processed") || trackingResult.includes("Approved")) {
+  if (trackingResult.includes("Fully Approved")) {
     statusMessage = (
       <span>
         Your application has been fully processed.{" "}
@@ -185,6 +205,8 @@ const TrackingStatusComponent = ({
         </a>
       </span>
     );
+  } else {
+    statusMessage = "Your application is currently under process. Please try again later.";
   }
   return (
     <div>

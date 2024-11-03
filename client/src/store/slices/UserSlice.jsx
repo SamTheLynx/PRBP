@@ -6,7 +6,8 @@ const initialState = {
     lname:null,
     phone:null,
     cnic:null,
-    email:null
+    email:null,
+    designation:null
 };
 
 const userSlice = createSlice({
@@ -19,6 +20,7 @@ const userSlice = createSlice({
             state.lname = action.payload.lname;
             state.phone=action.payload.phone;
             state.cnic=action.payload.cnic;
+            state.designation=action.designation;
             state.email=action.payload.email;
         },
         logoutUsers:(state,action)=>{
@@ -28,6 +30,7 @@ const userSlice = createSlice({
             state.phone= null;
             state.cnic= null;
             state.email= null;
+            state.designation=null;
         }
     },
 });

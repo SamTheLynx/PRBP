@@ -1,20 +1,26 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import {Form, Input, Select, Typography,message } from 'antd';
-import './Signup.css';
+import { Form, Input, Typography, message } from 'antd';
 import axios from 'axios';
-const {Text } = Typography;
-const { Option } = Select;
+import { useNavigate } from 'react-router-dom';
 
-function SubAdminSignup() {
+const { Text } = Typography;
+
+function AdminSignup() {
     const navigate = useNavigate();
+
     const onFinish = async (values) => {
         try {
-            const response = await axios.post('http://localhost:5000/subadmin-signup', values);
+            // Send a POST request to the signup endpoint
+            console.log('sending data to signup admin ',values)
+            // const { cnic, fname, lname, email, password, phone } = req.body;
+
+            console.log('sending data to the backend')
+            const response = await axios.post('http://localhost:5000/admin-signup', values);
+
             if (response.status === 201) {
                 message.success('Admin account created successfully!');
-                navigate('/admin');
-              }
+                navigate('/user-login');
+            }
         } catch (error) {
             console.error('Signup error:', error);
             if (error.response && error.response.status === 400) {
@@ -24,13 +30,15 @@ function SubAdminSignup() {
             }
         }
     };
+
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
+
     return (
         <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-gray-200 to-blue-100 p-4">
             <div className="w-full max-w-md bg-gray-100 p-8 rounded-lg shadow-md">
-                <h1 className="text-center text-custom-blue text-3xl mb-6">Sub-Admin Signup</h1>
+                <h1 className="text-center text-custom-blue text-3xl mb-6">Admin Signup</h1>
                 <Form layout="vertical" onFinish={onFinish} onFinishFailed={onFinishFailed}>
                     <Form.Item
                         name="fname"
@@ -77,20 +85,6 @@ function SubAdminSignup() {
                     >
                         <Input placeholder="Enter your phone number" />
                     </Form.Item>
-                    <Text className='heading-2'>Organization</Text>
-                    <Form.Item
-                      name='organization'
-                      rules={[{ required: true, message: 'Please select your organization' }]}
-                    >
-                      <Select placeholder="Select organization">
-                        <Option value="Police">Police</Option>
-                        <Option value="DTS">DTS</Option>
-                        <Option value="TEPA">TEPA</Option>
-                        <Option value="EPA">EPA</Option>
-                        <Option value="WASA">WASA</Option>
-            
-                      </Select>
-                    </Form.Item>
                     <Form.Item className="text-center">
                         <button htmlType="submit" className="bg-custom-blue text-white px-20 py-2 rounded-md">
                             Sign Up
@@ -102,4 +96,4 @@ function SubAdminSignup() {
     );
 }
 
-export default SubAdminSignup;
+export default AdminSignup;
