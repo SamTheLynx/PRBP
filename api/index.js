@@ -8,7 +8,6 @@ const ContactModel = require('./models/Contact.js');
 const OrganisationsModel = require('./models/Organisations.js');
 const Restaurant = require('./models/restaurantSchema.js');
 const Staff = require("./models/Staff.js")
-const Wasa = require('./models/Wasa.js');
 const nodemailer = require("nodemailer");
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes')
@@ -21,13 +20,19 @@ const FormData = require('form-data');
 const multer = require('multer');
 const jwt = require('jsonwebtoken');
 
+// Documents
+const Wasa = require('./models/Wasa.js');
+const CNIC = require('./models/CNIC.js');
+const DTS = require('./models/DTS.js');
+const Commercialization = require('./models/Commercialization.js');
+const Proof = require('./models/PaymentProof.js');
+
 const PORT=process.env.PORT||5000
 
 const app = express();
 app.use(bodyParser.json());
 app.use(express.json());
 app.use('/api', authRoutes);
-
 
 
 app.use(cors({
@@ -130,7 +135,7 @@ app.post('/cnic', upload.fields([
       });
 
       await newForm.save();
-      res.status(200).json({ message: 'Form submitted successfully' });
+      res.status(200).json({ message: 'Form submitted successfully' , formId: newForm._id});
   } catch (error) {
       console.error('Error submitting CNIC form:', error);
       res.status(500).json({ message: 'Error submitting form', error: error.message });
@@ -351,9 +356,8 @@ app.post('/signup', async (req, res) => {
 
 // Create Subadmin
 app.post('/subadmin-signup', async (req, res) => {
-  console.log('createSubadmin called from backend ')
   const { fname, lname, email, password, cnic, phone, organisation } = req.body;
-
+  //console.log('createSubadmin called from backend ', fname, lname, email, password, cnic, phone, organisation)
   // Check if the subadmin already exists
   const subadminExists = await Staff.findOne({ email });
   if (subadminExists) {
@@ -368,17 +372,19 @@ app.post('/subadmin-signup', async (req, res) => {
     password,
     cnic,
     phone,
-    organisation, // Specific to subadmins
+    organisation: organisation, // Specific to subadmins
     designation: 'subadmin',
     roles: ['update', 'accept', 'reject'],
   });
-
+  //console.log("before returning: ", subadmin);
   if (subadmin) {
     res.status(201).json({
       _id: subadmin._id,
       fname: subadmin.fname,
       lname: subadmin.lname,
       email: subadmin.email,
+      cnic: subadmin.cnic,
+      phone: subadmin.phone,
       designation: subadmin.designation,
       organisation:subadmin.organisation,
       roles: subadmin.roles,
@@ -465,7 +471,7 @@ app.post ('/admin-signup' ,async (req, res) => {
     res.status(400).json({ message: 'Invalid admin data' });
   }
 });
-  app.post('/submission', async (req, res) => {
+  app.post('/submission/', async (req, res) => {
     try {
       const restaurant = new Restaurant(req.body);
       await restaurant.save();
@@ -565,31 +571,36 @@ app.post ('/admin-signup' ,async (req, res) => {
     }
 });
   
-  app.post('/userLogin', async (req, res) => {
-    const { email, password } = req.body;
+// app.post('/userLogin', async (req, res) => {
+//   const { email, password } = req.body;
 
-    try {
-        const user = await UserModel.findOne({ email, password });
-        if (!user) {
-            return res.status(401).send('Invalid credentials');
-        }
-        res.json({message: 'login successful', user: user});
-    } catch (err) {
-        console.error("Error finding user", err);
-        res.status(500).send('Error finding user');
-    }
+//   try {
+//       const user = await UserModel.findOne({ email, password });
+//       if (!user) {
+//           return res.status(401).send('Invalid credentials');
+//       }
+//       res.json({message: 'login successful', user: user});
+//   } catch (err) {
+//       console.error("Error finding user", err);
+//       res.status(500).send('Error finding user');
+//   }
+// })
+
 // Admin and sud admin Login
 
 app.post('/userLogin', async (req, res) => {
   const { email, password } = req.body;
-  const user = await Staff.findOne({ email});
-  if (user && (await user.matchPassword(password))) {
+  const user = await Staff.findOne({ email, password});
+  if (user) {
     res.json({
       _id: user._id,
       fname: user.fname,
       lname: user.lname,
       email: user.email,
       designation: user.designation,
+      phone: user.phone,
+      cnic: user.cnic,
+      organisation: user.organisation,
       token: generateToken(user._id),
       message:'login successful',  // Add success message here
 
@@ -731,7 +742,7 @@ app.post('/uploadToIpfs', upload.single('file'), async (req, res) => {
 app.get('/getStatus/:id', async (req, res) => {
   try{
     console.log("in getStatus backend with id ", req.params.id);
-    const form = await Restaurant.findOne({_id: req.params.id});
+    const form = await Restaurant.findOne({formGId: req.params.id});
     if (!form) {
       return res.status(404).json({ message: "Form not found" });
     }
@@ -776,6 +787,58 @@ app.get('/certificates/:cnic', async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
+
+app.get('/getForms/:currentStatus', async (req, res) => {
+  const currentStatus = req.params.currentStatus;
+  console.log("org id inside get forms: ",currentStatus);
+  try {
+    // Query for forms with 'pending' status i.e. status < 7
+    const forms = await Restaurant.find({ status: currentStatus });
+
+    console.log("forms found: ", forms);
+
+    if (forms.length === 0) {
+      return res.status(404).json({ message: 'No forms found for this organisation' });
+    }
+    res.status(200).json(forms);
+  } catch (error) {
+    console.error('Error fetching forms:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+app.post('/cancel/:id', async (req, res) => {
+  const { id } = req.params;
+  console.log("id in cancel api: ", id);
+  try {
+    // Update the form with matching id and set status to 8
+    const result = await Restaurant.updateOne({ _id: id }, { status: 8 });
+
+    if (result.nModified === 0) {
+      return res.status(404).json({ message: 'Form to be cancelled cannot be found or is already cancelled' });
+    }
+
+    res.status(200).json({ message: 'Form cancelled successfully' });
+  } catch (error) {
+    console.error('Error cancelling form:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+app.get('/getDocuments/:formId', async(req, res) => {
+  const { formId } = req.params;
+  console.log("Fetching documents of form id: ", formId);
+
+  try{
+    const forms = await Restaurant.find({ OwnerCnic: cnic });
+
+  }
+  catch(e) {
+    console.error('Error fetching docs:', e);
+    res.status(500).json({ message: 'Server error', error: e.message });
+  }
+});
+
   
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}...`);

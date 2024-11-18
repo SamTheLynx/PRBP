@@ -28,9 +28,11 @@ export default function UserCertificateList() {
 
   const cancelBtn = async (id) => {
     try {
-      await axios.post(`http://localhost:5000/cancel/${id}`); // Optional API to cancel a form if needed
+      const response = await axios.post(`http://localhost:5000/cancel/${id}`); // Optional API to cancel a form if needed
+      console.log("return in cancelbtn: ", response.data.message);
+
       setCerts((prevCerts) =>
-        prevCerts.map((cert) => (cert._id === id ? { ...cert, hide: true } : cert))
+        prevCerts.filter((cert) => cert._id !== id)
       );
     } catch (error) {
       console.error('Error canceling form:', error);
@@ -46,14 +48,16 @@ export default function UserCertificateList() {
           <p>Business Address</p>
           <p>Progress</p>
         </div>
-        {certs.map((cert) => (
+        {certs
+          .filter((cert) => cert.status < 8)
+          .map((cert) => (
             <CertificateItem
                 key={cert.id} // Ensure this key is unique for each item
                 id={cert._id}
                 name={cert.RestaurantName}
                 dos={cert.RestaurantAddress}
                 progress={cert.status === 7 ? 'Completed' : 'Pending'}
-                clicked={cert.status < 7 ? cancelBtn : undefined}
+                clicked={()=>cancelBtn(cert._id)}   //{cert.status < 7 ? cancelBtn : undefined}
                 hide={cert.hide}
             />
             ))}

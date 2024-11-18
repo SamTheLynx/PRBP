@@ -13,4 +13,5 @@ const wasaSchema = new mongoose.Schema({
   ekhidmatSlip: { type: String}
 });
 
-module.exports = mongoose.model('Wasa', wasaSchema);
+const Wasa = mongoose.model('Wasa', wasaSchema);
+module.exports = Wasa;

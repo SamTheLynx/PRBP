@@ -7,6 +7,9 @@ const restaurantSchema = new mongoose.Schema({
   status:{
     type: Number,
   },
+  formGId:{
+    type : String
+  },
   RestaurantName: {
     type: String,
   },

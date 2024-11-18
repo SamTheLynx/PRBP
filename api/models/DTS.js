@@ -12,4 +12,5 @@ const dtsSchema = new mongoose.Schema({
   Form29: { type: String }
 });
 
-module.exports = mongoose.model('DTS', dtsSchema);
+const DTS = mongoose.model('DTS', dtsSchema);
+module.exports = DTS;

@@ -12,18 +12,20 @@ function Login() {
     const navigate = useNavigate();
 
     const onFinish = async (values) => {
-        console.log('Success:', values);
+        //hardcodedSubadminLogin();
+        //hardcodedUserLogin();
         try {
             const response = await axios.post('http://localhost:5000/userLogin', values);
             console.log('response: ',response)
             if (response.data.message === 'login successful') {
                 let UserBody = {
-                    fname: response.data?.fname,
-                    lname: response.data?.lname,
-                    phone: response.data?.phone,
-                    cnic: response.data?.cnic,
-                    email: response.data?.email,
-                    designation: response.data?.designation
+                    fname: response.data.fname,
+                    lname: response.data.lname,
+                    phone: response.data.phone,
+                    cnic: response.data.cnic,
+                    email: response.data.email,
+                    designation: response.data.designation,
+                    organisation: response.data.organisation
                 };
                 console.log('userbody: ',UserBody)
                 localStorage.setItem('user', JSON.stringify(UserBody));
@@ -49,6 +51,37 @@ function Login() {
         return state.user;
     });
     console.log("From Redux:", ReduxUser);
+
+    const hardcodedSubadminLogin = async() => {
+        const userBody = {
+            fname: "sub", 
+            lname: "1",
+            phone: "03432123432",
+            cnic: "3520284993746",
+            designation: "subadmin",
+            email: "sub1@gmail.com",
+            organisation: 1,
+        }
+        localStorage.setItem('user', JSON.stringify(userBody));
+        console.log('userBody being dispatched:', userBody);
+        dispatch(loginUsers(userBody));
+        navigate('/subadmin');
+    }
+
+    const hardcodedUserLogin = async() => {
+        const userBody = {
+            fname: "u", 
+            lname: "1",
+            phone: "03454323321",
+            cnic: "3540412847366",
+            designation: "businessOwner",
+            email: "u1@gmail.com",
+        }
+        localStorage.setItem('user', JSON.stringify(userBody));
+        console.log('userBody being dispatched:', userBody);
+        dispatch(loginUsers(userBody));
+        navigate('/');
+    }
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-gray-200 to-blue-100 p-4">

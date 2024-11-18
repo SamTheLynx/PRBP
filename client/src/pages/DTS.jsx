@@ -14,7 +14,7 @@ const DTS = () => {
   //retrieve formId from previous page
   useEffect(() => {
     if (location.state?.formId) {
-      console.log("Form ID received in WASA: ", location.state.formId);
+      console.log("Form ID received in DTS: ", location.state.formId);
       // You can now use the formId for any necessary operations
     }
   }, [location.state]);
@@ -37,6 +37,7 @@ const DTS = () => {
     });
 
     try {
+      console.log("formData before axios in DTS: ", formData);
       const response = await axios.post('http://localhost:5000/dts', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });

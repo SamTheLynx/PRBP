@@ -31,7 +31,7 @@ const UploadIDCard = () => {
 
       if (response.data.message === "Form submitted successfully") {
         message.success('Files uploaded successfully');
-        navigate('/submission'); 
+        navigate('/submission', { state: { formId: response.data.formId } });
       }
     } catch (error) {
       console.error('Error uploading files:', error.response?.data?.message || error.message);
