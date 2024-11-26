@@ -10,13 +10,10 @@ export default function BillingPage() {
     //retrieve formId from previous page
     useEffect(() => {
         if (location.state?.formId) {
-        console.log("Form ID received in WASA: ", location.state.formId);
+        console.log("Form ID received in billing: ", location.state.formId);
         // You can now use the formId for any necessary operations
         }
     }, [location.state]);
-
-    const ReduxUser = useSelector((state) => state.user);
-    console.log("From Redux: ", ReduxUser);
 
     const [popupVisible, setPopupVisible] = useState(false);
     const [selectedBill, setSelectedBill] = useState(null);

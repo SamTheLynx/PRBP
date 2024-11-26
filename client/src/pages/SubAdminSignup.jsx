@@ -9,11 +9,13 @@ const { Option } = Select;
 function SubAdminSignup() {
     const navigate = useNavigate();
     const onFinish = async (values) => {
+        console.log("values to send signup: ",values);
         try {
             const response = await axios.post('http://localhost:5000/subadmin-signup', values);
             if (response.status === 201) {
                 message.success('Admin account created successfully!');
-                navigate('/admin');
+                console.log("signed up subadmin: ",response);
+                //navigate('/admin');
               }
         } catch (error) {
             console.error('Signup error:', error);
@@ -79,16 +81,16 @@ function SubAdminSignup() {
                     </Form.Item>
                     <Text className='heading-2'>Organization</Text>
                     <Form.Item
-                      name='organization'
-                      rules={[{ required: true, message: 'Please select your organization' }]}
+                      name='organisation'
+                      rules={[{ required: true, message: 'Please select your organisation' }]}
                     >
-                      <Select placeholder="Select organization">
-                        <Option value="Police">Police</Option>
-                        <Option value="DTS">DTS</Option>
-                        <Option value="TEPA">TEPA</Option>
-                        <Option value="EPA">EPA</Option>
-                        <Option value="WASA">WASA</Option>
-            
+                      <Select placeholder="Select organisation">
+                        <Option value={1}>Police</Option>
+                        <Option value={2}>DTS</Option>
+                        <Option value={3}>Town Planning</Option>
+                        <Option value={4}>TEPA</Option>
+                        <Option value={5}>EPA</Option>
+                        <Option value={6}>WASA</Option>
                       </Select>
                     </Form.Item>
                     <Form.Item className="text-center">

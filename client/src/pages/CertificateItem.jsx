@@ -19,16 +19,16 @@ const CertificateItem = (props) => {
     }
 
     let btn;
-    if (props.progress === 'processed') {
+    if (props.progress === 'Completed') {
         btn = (
             <>
                 <button className="btn-normal" onClick={generatePDF}>
                     Download PDF
                 </button>
-               <button className='btn-normal' onClick={gotonext}>Transfer Ownership</button>
+               {/* <button className='btn-normal' onClick={gotonext}>Transfer Ownership</button> */}
             </>
         );
-    } else if (props.progress === 'pending') {
+    } else if (props.progress === 'Pending') {
         btn = (
             <button className="btn-transparent" onClick={props.clicked}>
                 X

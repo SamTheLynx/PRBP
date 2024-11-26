@@ -37,7 +37,7 @@ const Commercialization = () => {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         if (response.data.message === "Form submitted successfully") {
-          navigate('/tracking'); // Navigate to /tracking if certificate is uploaded
+          navigate('/billing', { state: { formId: location.state.formId }}); // Navigate to /tracking if certificate is uploaded
         }
       } catch (error) {
         console.error('Error submitting form:', error.response?.data?.message || error.message);

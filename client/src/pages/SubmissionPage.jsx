@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Form, Input, Typography, Select, Row, Col } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import EmployeeTable from './EmployeeTable';
 import { useSelector } from "react-redux";
@@ -96,6 +96,15 @@ const cuisines = [
 ];
 
 function SubmissionPage() {
+  //retrieve formId from previous page
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state?.formId) {
+      console.log("Form ID received in form g: ", location.state.formId);
+      // You can now use the formId for any necessary operations
+    }
+  }, [location.state]);
+
   const ReduxUser = useSelector((state) => state.user);
   const [ownerCnic, setOwnerCnic] = useState(ReduxUser.cnic);
 
@@ -111,14 +120,14 @@ function SubmissionPage() {
   const onFinish = async (values) => {
     //add cnic to the form for easy access and tracking
     //status 0 means submission done, waiting for review from org1
-    values = {OwnerCnic: ownerCnic, status: 0, ...values};
+    values = {OwnerCnic: ownerCnic, status: 1, formGId: location.state.formId, ...values};
     // console.log('File List', fileList);
     try {
       const response = await axios.post('http://localhost:5000/submission', values);
       console.log("response: ", response.data.message);
       console.log("form id retrieved: ", response.data.formId);
       if (response.data.message === "Form submitted successfully") {
-        navigate('/dts', { state: { formId: response.data.formId } });  // Pass formId using state
+        navigate('/dts', { state: { formId: location.state.formId } });  // Pass formId using state
         //navigate('/wasa', { state: { formId: response.data.formId } });  // Pass formId using state
       }
     } catch (error) {

@@ -1,8 +1,12 @@
 # PRBP
 
-You will have to open up 3 split terminals. One will handle the blockchain, one for the frontend and one for the backend.
+You will have to open up 2 split terminals. One for the frontend and one for the backend.
 
-Terminal 1: 'cd client'
+Terminal 1: 'cd api'
+            'npm install'
+            'nodemon index.js'
+
+Terminal 2: 'cd client'
             'npm install'
             'npm start'
 

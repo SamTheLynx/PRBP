@@ -5,44 +5,23 @@ import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutSubadmins } from "./store/slices/SubAdminSlice";
-import { logoutAdmins } from "./store/slices/AdminSlice";
 import { logoutUsers } from "./store/slices/UserSlice";
+
 const Navbar = () => {
   const ReduxUser=useSelector((state)=>{
     return state.user;
   })
 
-  const ReduxAdmin=useSelector((state)=>{
-    return state.admin;
-  })
-
-  const ReduxSubadmin=useSelector((state)=>{
-    return state.subadmin;
-  })
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const logout = async () => {
-  //   if(ReduxAdmin.loggedIn){
-  //     dispatch(logoutAdmins());
-  //     localStorage.removeItem('admin');;
-  //   }
-  //   else if(ReduxSubadmin.loggedIn){
-  //     dispatch(logoutSubadmins());
-  //     localStorage.removeItem('subadmin');
-  //   }
-  //   //localStorage.removeItem('state');
-  //   navigate('/');
-  // };
-// Logout function
+  // Logout function
   const logout = async () => {
-  localStorage.removeItem('user');
-  localStorage.removeItem('state');
-  dispatch(logoutUsers());
-  navigate('/'); 
-  window.location.reload();
+    localStorage.removeItem('user');
+    localStorage.removeItem('state');
+    dispatch(logoutUsers());
+    navigate('/'); 
+    window.location.reload();
   };
 
   return (
@@ -57,7 +36,7 @@ const Navbar = () => {
         </div>
 
         <div className="second-div">
-        {!ReduxUser.loggedIn && !ReduxAdmin.loggedIn && !ReduxSubadmin.loggedIn ? (
+        {!ReduxUser.loggedIn ? (
           <div className="log-sign-options">
             <Link className="no-underline" to="/user-login">
               <p className="p">Login</p>
@@ -69,7 +48,8 @@ const Navbar = () => {
           </div>
         ) : (
           <>
-            {ReduxAdmin.loggedIn || ReduxSubadmin.loggedIn ? (
+            {/* {ReduxAdmin.loggedIn || ReduxSubadmin.loggedIn  */}
+            {ReduxUser.loggedIn && (ReduxUser.designation === 'subadmin' || ReduxUser.designation === 'admin') ? (
               <div>
                   <p className="p" onClick={logout}>Logout</p>
               </div>
@@ -89,15 +69,15 @@ const Navbar = () => {
 
       <nav className="navbar">
         <ul>
-          {!ReduxAdmin.loggedIn&& !ReduxSubadmin.loggedIn &&(<ul>
+          {(!ReduxUser.loggedIn || (ReduxUser.loggedIn && ReduxUser.designation === 'businessOwner')) &&(<ul>
             <Link
-              className="no-underline" to={ReduxUser.loggedIn ? "/cnic" : "/loginOptions"} >
+              className="no-underline" to={ReduxUser.loggedIn ? "/cnic" : "/user-login"} >
               <li>Apply for Registration</li>
             </Link>
 
             <Link
               className="no-underline"
-              to={ReduxUser.loggedIn ? "/tracking" : "/loginOptions"}
+              to={ReduxUser.loggedIn ? "/tracking" : "/user-login"}
             >
               <li>Tracking</li>
             </Link>
@@ -108,14 +88,14 @@ const Navbar = () => {
               <li>Procedure</li>
             </Link>
           </ul>)}
-          {ReduxAdmin.loggedIn && (
+          {ReduxUser.loggedIn && ReduxUser.designation === 'admin' && (
             <Link className="no-underline" to="/admin">
-              <li style={{fontSize:"30px",fontWeight:"bold"}}>Admin   Portal</li>
+              <li style={{fontSize:"20px",fontWeight:"bold"}}>Admin   Portal</li>
             </Link>
           )}
-          {ReduxSubadmin.loggedIn && (
+          {ReduxUser.loggedIn && ReduxUser.designation === 'subadmin' && (
             <Link className="no-underline" to="/subAdmin">
-              <li style={{fontSize:"30px",fontWeight:"bold"}}>Sub-Admin Portal</li>
+              <li style={{fontSize:"20px",fontWeight:"bold"}}>Sub-Admin Portal</li>
             </Link>
           )}
         </ul>
