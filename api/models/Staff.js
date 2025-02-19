@@ -10,7 +10,7 @@ const StaffSchema = new mongoose.Schema({
   password: { type: String, required: true },
   phone: { type: String, required: true },
   designation: { type: String, enum: ['admin', 'subadmin', 'businessOwner'] },
-  organisation: { type: Number, required : true },// only for submins
+  organisation: { type: Number },// only for submins
   roles: [{ type: String }], // e.g., ['create', 'update', 'delete', 'accept', 'reject']
 });
 

@@ -342,7 +342,8 @@ app.post('/signup', async (req, res) => {
         phone: phoneNumber,
         email: email,
         password: password,
-        designation:'businessOwner'
+        designation:'businessOwner',
+        organisation : ''
       });
   
       await newUser.save();
