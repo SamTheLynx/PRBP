@@ -1,80 +1,122 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap');
-*{
-    padding: 0px;
-    margin: 0px;
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box; /* Fixes overflow issues */
 }
 
-.main-container{
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa; /* Light gray background for better contrast */
+}
+
+.main-container {
     display: flex;
     justify-content: center;
-    padding: 44px;
+    padding: 40px;
 }
 
-.main-container .list-container{
+.main-container .list-container {
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+    align-items: stretch; /* Ensures child elements take full width */
     border: 1px solid #3C4E6F;
     border-radius: 5px;
     background-color: white;
     box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
     width: 65%;
-    position: relative;
-    padding: 50px;
+    max-width: 900px; /* Ensures it doesn’t grow too wide */
+    padding: 30px;
 }
 
-.main-container .list-container .title-container{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    column-gap: 70px;
-    padding-left: 45px;
-    padding-right: 20px;
-    margin: 10px;
-    width: 900px;
-}
-
-.main-item-container{
+.main-container .list-container .title-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 10px 20px;
+    font-weight: bold;
+    width: 100%; /* Adjusted for responsiveness */
+    border-bottom: 2px solid #3C4E6F; /* Separator for better UI */
+}
+
+/* Individual Certificate Item */
+.main-item-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Prevents horizontal overflow */
     border: 1px solid #3C4E6F;
     box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
     background-color: white;
-    margin:10px;
-    padding-left: 30px;
-    padding-right: 30px;
-    padding-top: 15px;
-    padding-bottom: 15px;
+    margin: 10px 0;
+    padding: 15px 20px;
+    width: 100%; /* Ensures it aligns properly */
 }
 
-.vertical-line{
-    border-right: solid 1px  #D9D9D9;
-    height:50px;
+/* Vertical Separator */
+.vertical-line {
+    border-right: solid 1px #D9D9D9;
+    height: 50px;
 }
 
-.btn-normal{
+/* Buttons */
+.btn-normal {
     width: 180px;
-    padding: 9px;
+    padding: 10px;
     border-radius: 5px;
     background: #315396;
-    border: #315396 solid 1px;
-    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
-    font-family: 'Roboto', sans-serif;
+    border: none;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
     font-size: 16px;
     text-align: center;
-    color:white;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
 }
 
-.btn-transparent{
+.btn-normal:hover {
+    background: #253a73;
+}
+
+.btn-transparent {
     width: 180px;
     padding: 9px;
     background-color: transparent;
-    font-family: 'Roboto', sans-serif;
     font-size: 20px;
     font-weight: bold;
     text-align: center;
-    color:#3C4E6F;
+    color: #3C4E6F;
+    cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .main-container {
+        padding: 20px;
+    }
+
+    .main-container .list-container {
+        width: 90%; /* Allow more flexibility on smaller screens */
+        padding: 20px;
+    }
+
+    .title-container {
+        flex-direction: column;
+        text-align: center;
+        row-gap: 10px;
+    }
+
+    .main-item-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .btn-normal,
+    .btn-transparent {
+        width: 100%;
+        margin-top: 10px;
+    }
 }

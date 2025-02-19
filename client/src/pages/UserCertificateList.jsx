@@ -53,7 +53,7 @@ export default function UserCertificateList() {
           .map((cert) => (
             <CertificateItem
                 key={cert.id} // Ensure this key is unique for each item
-                id={cert._id}
+                id={cert.formGId}
                 name={cert.RestaurantName}
                 dos={cert.RestaurantAddress}
                 progress={cert.status === 7 ? 'Completed' : 'Pending'}
